@@ -1,6 +1,9 @@
 #define UNIT_TESTING
 
 #include <iostream>
+#include <cstdlib>
+#include <chrono>
+
 #include "catch.hpp"
 #include "Header/DataStructures.hpp"
 #include "Header/OpController.hpp"
@@ -80,8 +83,26 @@ TEST_CASE("Test Remote Controller Receiver class", "[Receiver]") {
     REQUIRE(signal.left() == 512);
 
 
+}
+
+TEST_CASE("Test Duration of Functions", "[Timing]") {
+
+    using namespace std::chrono;
+
+    auto t1 = system_clock::now();
+
+    system("cd ..");
+
+    auto duration = system_clock::now() - t1;
+
+
+    std::cout << "It took " << duration_cast<milliseconds>(duration).count() << " milliseconds to run this function.\n";
+
+
+
+
+
 
 
 }
-
 

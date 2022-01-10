@@ -2,7 +2,8 @@
 #include "Header/Receiver.hpp"
 #include "Header/Movement.hpp"
 #include "Header/LateralController.hpp"
-#include "Header/HeadwayTracker.h"
+#include "Header/HeadwayTracker.hpp"
+#include <cstdlib>
 
 
 //#include <WiringPi> http://wiringpi.com/reference/ [WIRING PI IS DEPRECATED]
@@ -14,6 +15,8 @@ void main() {
 	LateralController calculator;
 	Movement navSignal; // output to motor
 
+	// Perhaps take picture by using this command as a unix interface
+	std::system("");
 
 	// Put switch statement into loop
 	switch (setting.currMode()) {
