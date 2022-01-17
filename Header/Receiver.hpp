@@ -1,10 +1,13 @@
-#pragma once
+#pragma 
+#include <pigpio.h>
 #include "DataStructures.hpp"
 
 // Analog Read: http://wiringpi.com/reference/core-functions/
+// 
+// Likely to be PWM signals
 
-#define SIGNAL1
-#define SIGNAL2
+#define SIGNAL1 18
+#define SIGNAL2 19
 
 // More testing to be done during Functional Tests
 
@@ -12,8 +15,8 @@ class Receiver {
 public:
 
 	Receiver() {
-		//pinMode(SIGNAL1, INPUT);
-		//pinMode(SIGNAL2, INPUT);
+		gpioSetMode(SIGNAL1, PI_ALT5);
+		gpioSetMode(SIGNAL2, PI_ALT5);
 
 	}
 

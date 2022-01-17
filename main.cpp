@@ -9,45 +9,50 @@
 //#include <WiringPi> http://wiringpi.com/reference/ [WIRING PI IS DEPRECATED]
 //#include <pigpio.h> https://abyz.me.uk/rpi/pigpio/cif.html
 
-void main() {
-	OpController setting;
-	Receiver rcSignal; // manual input
-	LateralController calculator;
-	Movement navSignal; // output to motor
+int main() {
+	
+	if (gpioInitialise() >= 0){ // Attempt to initialize Library	
+	
+	
+		OpController setting;
+		Receiver rcSignal; // manual input
+		LateralController calculator;
+		Movement navSignal; // output to motor
 
-	// Perhaps take picture by using this command as a unix interface
-	std::system("");
+		// Perhaps take picture by using this command as a unix interface
+		std::system("");
 
-	// Put switch statement into loop
-	switch (setting.currMode()) {
-	case off:
+		// Put switch statement into loop
+		switch (setting.currMode()) {
+		case off:
 
-		break;
+			break;
 
-	case manual:
-		// This mode should run much quicker than control system
-		navSignal(rcSignal.read());
-		break;
+		case manual:
+			// This mode should run much quicker than control system
+			navSignal(rcSignal.read());
+			break;
 
-	case test_auto:
-		// TODO: Receive a signal from RC to activate automation for X number of seconds
-		
-		// TODO: Read calculated parameters from edge image
-		navSignal(calculator(0, 0));
-		break;
+		case test_auto:
+			// TODO: Receive a signal from RC to activate automation for X number of seconds
+			
+			// TODO: Read calculated parameters from edge image
+			navSignal(calculator(0, 0));
+			break;
 
-	case automatic:
-		// TODO: Calculate angular correction from edge image
-		navSignal(calculator(0, 0));
-		break;
+		case automatic:
+			// TODO: Calculate angular correction from edge image
+			navSignal(calculator(0, 0));
+			break;
 
 
+		}
+
+
+
+		// Terminate library functionalities
+		gpioTerminate();
 	}
-
-
-
-
-
 
 }
 

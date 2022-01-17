@@ -1,5 +1,6 @@
 #pragma once
 
+
 /*
 	The HeadwayTracker class abstracts the functionality of the GArmin v3 LiDAR
 	for software implementation. This class uses PWM to interface with the sensor.
@@ -13,28 +14,31 @@
 */
 
 
-#define TRIGGER		// input
-#define MONITOR		// output
-#define MINDIST	50// meters
+#define TRIGGER	23	// input
+#define MONITOR	24	// output
+#define MIN_DIST	50.0// meters
+#define TIMEOUT 60 //milliseconds
 
 
 class HeadwayTracker {
 public:
 
+	HeadwayTracker();
+
 	// Returns true if it measures a value greater than the safe distance
-	bool safeDistance() { return (readDistance() > MINDIST); }
+	bool safeDistance();
 
 	// TODO: Send LOW signal to TRIGGER pin and measure MONITOR pin. Set back to high when done
-	unsigned int readDistance();
-
-private:
-	// LIDARLite
-
+	double readDistance();
 	
 
 
+private:
+	double measurement;
+	uint32_t pulseWidth;
+	bool measuring;
 
-
+	static void _measure(int gpio, int level, uint32_t tick, void *user);
 
 
 };
