@@ -20,7 +20,7 @@ void main() {
 
 	// Put switch statement into loop
 	switch (setting.currMode()) {
-	case off:
+	case standby:
 
 		break;
 
@@ -30,7 +30,8 @@ void main() {
 		break;
 
 	case test_auto:
-		// TODO: Receive a signal from RC to activate automation for X number of seconds
+		// TODO: Receive a signal from RC to activate automation for X number of seconds.
+		//			after X number of seconds, switch to "standby mode"
 		
 		// TODO: Read calculated parameters from edge image
 		navSignal(calculator(0, 0));

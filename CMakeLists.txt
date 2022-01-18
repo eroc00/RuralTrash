@@ -23,7 +23,8 @@ set(MODULES Header/DataStructures.hpp
 	    Header/Movement.hpp
 	    Header/OpController.hpp
 	    Header/Receiver.hpp
-	    Header/HeadwayTracker.hpp)
+	    Header/HeadwayTracker.hpp
+	    Header/ImageProcessor.hpp)
 
 # make executable
 add_executable(vehicle_code ${MODULES} main.cpp)

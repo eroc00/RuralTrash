@@ -8,7 +8,7 @@ struct PWMPair {
 	PWMPair& operator()(unsigned int a, unsigned int b) {
 
 		// right motor PWM bits: 0-9
-		bits = b & 0x3FF; // right motor signal
+		bits = (b & 0x3FF); // right motor signal
 
 		// left motor PWM bits: 10-19
 		bits = bits | (a & 0x3FF) << 10; 

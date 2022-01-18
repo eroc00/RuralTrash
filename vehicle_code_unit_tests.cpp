@@ -12,7 +12,7 @@
 #include "Header/LateralController.hpp"
 
 
-
+std::chrono::system_clock::duration timeFunction(void* func);
 
 TEST_CASE("Test Data Structures", "[DataStructures]") {
     PWMPair signals;
@@ -38,6 +38,10 @@ TEST_CASE("Test Data Structures", "[DataStructures]") {
     signals(-1, 0);
     REQUIRE(signals.left() == 0x3FF);
     REQUIRE(signals.right() == 0);
+
+    signals(845, 1023);
+    REQUIRE(signals.left() == 845);
+    REQUIRE(signals.right() == 1023);
 
     
 }
@@ -92,6 +96,7 @@ TEST_CASE("Test Duration of Functions", "[Timing]") {
     auto t1 = system_clock::now();
 
     system("cd ..");
+    system("dir");
 
     auto duration = system_clock::now() - t1;
 
@@ -106,3 +111,78 @@ TEST_CASE("Test Duration of Functions", "[Timing]") {
 
 }
 
+TEST_CASE("Test angle to motor signal function", "[LateralController]") {
+
+    PWMPair signals;
+
+    angleToMotorSignal(0, signals);
+
+    REQUIRE(signals.left() == 1023);
+    REQUIRE(signals.right() == 1023);
+
+    angleToMotorSignal(5.0, signals);
+
+    REQUIRE(signals.left() < 1023);
+    REQUIRE(signals.left() != 0);
+    REQUIRE(signals.right() == 1023);
+
+    angleToMotorSignal(-5.0, signals);
+
+    REQUIRE(signals.right() < 1023);
+    REQUIRE(signals.right() != 0);
+    REQUIRE(signals.left() == 1023);
+
+}
+
+TEST_CASE("Test initialization speed", "[Timing]") {
+
+    using namespace std::chrono;
+
+    { // with initialization
+        auto t1 = system_clock::now();
+        double rightWSpeed = 0, leftWSpeed = 0;
+        auto initTime = system_clock::now() - t1;
+
+        rightWSpeed = MAXSPEED + ((2 * PI * 5 * TRACKWIDTH) / (360.0 * SAMPLETIME));
+        leftWSpeed = MAXSPEED - ((2 * PI * 5 * TRACKWIDTH) / (360.0 * SAMPLETIME));
+
+        auto duration = system_clock::now() - t1;
+        std::cout << "Initialization time: " 
+            << duration_cast<nanoseconds>(initTime).count() << " nanoseconds.\n";
+
+        std::cout << "Calculation time: "
+            << duration_cast<nanoseconds>(duration-initTime).count() << " nanoseconds.\n";
+
+
+    }
+
+    { // without initialization
+        double rightWSpeed = 0, leftWSpeed = 0;
+        auto t1 = system_clock::now();
+
+        rightWSpeed = MAXSPEED + ((2 * PI * 5 * TRACKWIDTH) / (360.0 * SAMPLETIME));
+        leftWSpeed = MAXSPEED - ((2 * PI * 5 * TRACKWIDTH) / (360.0 * SAMPLETIME));
+
+        auto duration = system_clock::now() - t1;
+        std::cout << "Calculation without initialization: "
+            << duration_cast<nanoseconds>(duration).count() << " nanoseconds.\n";
+
+    }
+
+
+
+
+
+
+
+}
+
+/*
+std::chrono::system_clock::duration timeFunction(void* func) {
+    auto t1 = std::chrono::system_clock::now();
+
+    func();
+
+    return (std::chrono::system_clock::now() - t1);
+}
+*/
