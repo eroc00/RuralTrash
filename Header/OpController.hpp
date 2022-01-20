@@ -1,6 +1,6 @@
 #pragma once
 
-enum Mode{off, manual, test_auto, automatic};
+enum Mode{standby, manual, test_auto, automatic};
 
 class OpController {
 
@@ -18,7 +18,7 @@ public:
 		m_mode = (Mode)(((int)m_mode + 3) % 4);
 	}
 
-	void disable() { m_mode = off; };
+	void disable() { m_mode = standby; };
 
 private:
 	Mode m_mode;
