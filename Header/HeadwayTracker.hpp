@@ -13,9 +13,9 @@
 
 */
 
-
-#define TRIGGER	23	// input
-#define MONITOR	24	// output
+#include <stdint.h>
+#define TRIGGER	23	// output
+#define MONITOR	24	// input
 #define MIN_DIST	50.0// meters
 #define TIMEOUT 60 //milliseconds
 
@@ -38,7 +38,7 @@ private:
 	uint32_t pulseWidth;
 	bool measuring;
 
-	static void _measure(int gpio, int level, uint32_t tick, void *user);
-
+	void _measure(int gpio, int level, uint32_t tick);
+	static void _callbackExt(int gpio, int level, uint32_t tick, void *user);
 
 };

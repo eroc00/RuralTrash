@@ -8,7 +8,7 @@ HeadwayTracker::HeadwayTracker(){
 	measurement = MIN_DIST + (MIN_DIST/2.0);
 	pulseWidth = 0;
 	measuring = false;
-	gpioSetAlertFuncEX(MONITOR, _measure, (void*)this);
+	gpioSetAlertFuncEx(MONITOR, _callbackExt, (void*)this);
 	
 }
 
@@ -28,7 +28,14 @@ double HeadwayTracker::readDistance(){
 	return measurement;
 }
 
-void HeadwayTracker::_measure(int gpio, int level, uint32_t tick, void *user){
+void HeadwayTracker::_callbackExt(int gpio, int level, uint32_t tick, void *user){
+	HeadwayTracker* self = (HeadwayTracker *) user;
+	
+	self->_measure(gpio, level, tick);
+	
+}
+
+void HeadwayTracker::_measure(int gpio, int level, uint32_t tick){
 	
 	if (level == 1){ // if it starts measuring distance
 			pulseWidth = tick;
@@ -52,3 +59,5 @@ void HeadwayTracker::_measure(int gpio, int level, uint32_t tick, void *user){
 	
 	
 }
+
+

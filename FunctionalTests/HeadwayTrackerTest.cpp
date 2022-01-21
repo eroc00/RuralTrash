@@ -2,6 +2,7 @@
 #include "../Header/HeadwayTracker.hpp"
 #include <iostream>
 #include <pigpio.h>
+#include <stdint.h>
 
 int main(){
 	if (gpioInitialise() >= 0){

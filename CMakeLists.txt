@@ -18,6 +18,14 @@ if(UNIX AND STRICT)
   set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Wextra -Werror")
 endif()
 
+
+################################################################################
+# Include Headers
+################################################################################
+
+#set(CMAKE_MODULE_PATH ${CMAKE_SOURCE_DIR})
+find_Package(pigpio REQUIRED)
+
 set(MODULES Header/DataStructures.hpp 
 	    Header/LateralController.hpp
 	    Header/Movement.hpp
@@ -27,10 +35,15 @@ set(MODULES Header/DataStructures.hpp
 	    Header/ImageProcessor.hpp)
 
 # make executable
-add_executable(vehicle_code ${MODULES} main.cpp)
+#add_executable(vehicle_code ${MODULES} main.cpp)
+add_executable(HeadwayTrackerTest 
+		Header/HeadwayTracker.hpp
+		Header/HeadwayTracker.cpp
+		FunctionalTests/HeadwayTrackerTest.cpp)
+target_link_libraries(HeadwayTrackerTest pigpio)
 
 # build the unit tests
-add_executable(unit_tests ${MODULES} catch.hpp unit_tests.cpp vehicle_code_unit_tests.cpp)
+#add_executable(unit_tests ${MODULES} catch.hpp unit_tests.cpp vehicle_code_unit_tests.cpp)
 enable_testing()
 
 # register Catch tests with cmake
