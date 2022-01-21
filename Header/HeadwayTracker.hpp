@@ -16,8 +16,8 @@
 #include <stdint.h>
 #define TRIGGER	23	// output
 #define MONITOR	24	// input
-#define MIN_DIST	50.0// meters
-#define TIMEOUT 60 //milliseconds
+#define MIN_DIST	0.5// meters
+#define TIMEOUT 100 //milliseconds
 
 
 class HeadwayTracker {
