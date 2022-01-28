@@ -31,7 +31,7 @@ set(MODULES Header/DataStructures.hpp
 	    Header/Movement.hpp
 	    Header/OpController.hpp
 	    Header/Receiver.hpp
-	    Header/HeadwayTracker.hpp
+	    Header/HeadwayTracker.hpp Header/HeadwayTracker.cpp
 	    Header/ImageProcessor.hpp)
 
 # make executable
@@ -43,9 +43,9 @@ add_executable(HeadwayTrackerTest
 target_link_libraries(HeadwayTrackerTest pigpio)
 
 # build the unit tests
-#add_executable(unit_tests ${MODULES} catch.hpp unit_tests.cpp vehicle_code_unit_tests.cpp)
+add_executable(unit_tests ${MODULES} catch.hpp unit_tests.cpp vehicle_code_unit_tests.cpp)
 enable_testing()
 
 # register Catch tests with cmake
-#include(Catch)
-#catch_discover_tests(unit_tests)
+include(Catch)
+catch_discover_tests(unit_tests)
