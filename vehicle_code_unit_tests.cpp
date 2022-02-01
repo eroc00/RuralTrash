@@ -51,7 +51,7 @@ TEST_CASE("Test Operational Controller", "[OpController]") {
     
     // Test default constructor
     OpController state;
-    REQUIRE(state.currMode() == off);
+    REQUIRE(state.currMode() == standby);
 
     // Test up() function
     for (uint8_t i = 0; i < 3; i++) {
@@ -61,7 +61,7 @@ TEST_CASE("Test Operational Controller", "[OpController]") {
     REQUIRE(state.currMode() == automatic);
 
     state.up(); // loop back to beginning
-    REQUIRE(state.currMode() == off);
+    REQUIRE(state.currMode() == standby);
 
 
     // Test down() function
