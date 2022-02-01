@@ -26,10 +26,17 @@ endif()
 #set(CMAKE_MODULE_PATH ${CMAKE_SOURCE_DIR})
 find_Package(pigpio REQUIRED)
 
+find_Package(OpenCV REQUIRED)
+include_directories( ${OpenCV_INCLUDE_DIRS})
+#target_link_libraries( [executable], ${OpenCV_LIBS} )
+
+find_Package(raspicam REQUIRED)
+#target_link_libraries( [executable, ${raspicam_LIBS} )
+
 set(MODULES Header/DataStructures.hpp 
 	    Header/LateralController.hpp
 	    Header/Movement.hpp
-	    Header/OpController.hpp
+	    Header/OpController.hpp Header/OpController.cpp
 	    Header/Receiver.hpp
 	    Header/HeadwayTracker.hpp Header/HeadwayTracker.cpp
 	    Header/ImageProcessor.hpp)
@@ -42,10 +49,15 @@ add_executable(HeadwayTrackerTest
 		FunctionalTests/HeadwayTrackerTest.cpp)
 target_link_libraries(HeadwayTrackerTest pigpio)
 
+add_executable(EdgeDetectorTest FunctionalTests/EdgeDetection.cpp)
+target_link_libraries(EdgeDetectorTest ${OpenCV_LIBS}) 
+
 # build the unit tests
-add_executable(unit_tests ${MODULES} catch.hpp unit_tests.cpp vehicle_code_unit_tests.cpp)
 enable_testing()
+add_executable(unit_tests ${MODULES} catch.hpp unit_tests.cpp vehicle_code_unit_tests.cpp)
+target_link_libraries(unit_tests pigpio)
+add_test(unit_tests unit_tests)
 
 # register Catch tests with cmake
-include(Catch)
-catch_discover_tests(unit_tests)
+#include(Catch)
+#catch_discover_tests(unit_tests)

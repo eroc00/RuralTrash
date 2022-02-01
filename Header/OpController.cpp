@@ -1,6 +1,6 @@
 #include "OpController.hpp"
 
-OpController::OpController() : m_mode(off) {}
+OpController::OpController() : m_mode(standby) {}
 
 Mode OpController::currMode() const { return m_mode; } // can use switch case when calling this
 
