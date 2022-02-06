@@ -1,13 +1,11 @@
 #pragma 
 #include <pigpio.h>
 #include "DataStructures.hpp"
+#include "PinDefs.hpp"
 
 // Analog Read: http://wiringpi.com/reference/core-functions/
 // 
 // Likely to be PWM signals
-
-#define SIGNAL1 18
-#define SIGNAL2 19
 
 // More testing to be done during Functional Tests
 

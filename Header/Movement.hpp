@@ -1,32 +1,20 @@
 #pragma once
 #include "DataStructures.hpp"
-//#include <wiringPi.h>
-// Reference: http://wiringpi.com/reference/
+#include "PinDefs.hpp"
+#include <pigpio.h>
 
-#define LEFTMOTOR
-#define RIGHTMOTOR
+#define FREQUENCY 2000 // Hz
+#define PWM_RANGE 1023
 
 /* Movement Class must be tested during Functional Testing Phase */
 
 class Movement {
 public:
-	Movement() {
-		//pinMode(LEFTMOTOR, PWM_OUTPUT);
-		//pinMode(RIGHTMOTOR, PWM_OUTPUT);
-
-	}
+	Movement();
 
 	~Movement() = default;
 
-	void operator()(PWMPair& signal) {
-		// PWM values range from 0-1024 (2^10)
-
-
-		//digitalWrite(LEFTMOTOR, signal.left());
-		//digitalWrite(RIGHTMOTOR, signal.right());
-
-	}
-
+	void operator()(PWMPair& signal);
 
 
 private:

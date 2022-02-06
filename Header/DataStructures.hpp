@@ -6,6 +6,9 @@ struct PWMPair {
 	
 	// input
 	PWMPair& operator()(unsigned int a, unsigned int b) {
+		
+		// Keep numbers between 0 and 1023
+		bpf(a); bpf(b);
 
 		// right motor PWM bits: 0-9
 		bits = (b & 0x3FF); // right motor signal
@@ -22,5 +25,10 @@ struct PWMPair {
 
 private:
 	unsigned int bits;
+
+	void bpf(unsigned int& num){
+		if (num > 1023)
+			num = 1023;
+	}
 
 };

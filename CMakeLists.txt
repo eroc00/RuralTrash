@@ -35,7 +35,7 @@ find_Package(raspicam REQUIRED)
 
 set(MODULES Header/DataStructures.hpp 
 	    Header/LateralController.hpp
-	    Header/Movement.hpp
+	    Header/Movement.hpp Header/Movement.cpp
 	    Header/OpController.hpp Header/OpController.cpp
 	    Header/Receiver.hpp
 	    Header/HeadwayTracker.hpp Header/HeadwayTracker.cpp
@@ -48,6 +48,12 @@ add_executable(HeadwayTrackerTest
 		Header/HeadwayTracker.cpp
 		FunctionalTests/HeadwayTrackerTest.cpp)
 target_link_libraries(HeadwayTrackerTest pigpio)
+
+add_executable(MotorTest
+		Header/Movement.hpp
+		Header/Movement.cpp
+		FunctionalTests/MotorTest.cpp)
+target_link_libraries(MotorTest pigpio)
 
 add_executable(EdgeDetectorTest FunctionalTests/EdgeDetection.cpp)
 target_link_libraries(EdgeDetectorTest ${OpenCV_LIBS}) 

@@ -9,13 +9,10 @@
 	Datasheet: https://static.garmin.com/pumac/LIDAR_Lite_v3_Operation_Manual_and_Technical_Specifications.pdf
 	12C Implementation: https://github.com/garmin/LIDARLite_Arduino_Library/tree/master/src
 
-
-
 */
 
 #include <stdint.h>
-#define TRIGGER	23	// output
-#define MONITOR	24	// input
+#include "PinDefs.hpp"
 #define MIN_DIST	50.0// meters
 #define TIMEOUT 60 //milliseconds
 
