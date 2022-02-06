@@ -12,9 +12,16 @@
 */
 
 #include <stdint.h>
+<<<<<<< HEAD
 #include "PinDefs.hpp"
 #define MIN_DIST	50.0// meters
 #define TIMEOUT 60 //milliseconds
+=======
+#define TRIGGER	23	// output
+#define MONITOR	24	// input
+#define MIN_DIST	0.5// meters
+#define TIMEOUT 100 //milliseconds
+>>>>>>> e615935a6b3b7cfe40a1202590c8afd5c3537464
 
 
 class HeadwayTracker {

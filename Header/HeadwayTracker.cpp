@@ -1,11 +1,12 @@
 #include "HeadwayTracker.hpp"
 #include <pigpio.h>
+#include <iostream>
 
 HeadwayTracker::HeadwayTracker(){
 	gpioSetMode(TRIGGER, PI_OUTPUT);
-	gpioWrite(TRIGGER, 1);
+	gpioWrite(TRIGGER, 0);
 	gpioSetMode(MONITOR, PI_INPUT);
-	measurement = MIN_DIST + (MIN_DIST/2.0);
+	measurement = 2*MIN_DIST + (MIN_DIST/2.0);
 	pulseWidth = 0;
 	measuring = false;
 	gpioSetAlertFuncEx(MONITOR, _callbackExt, (void*)this);
@@ -19,7 +20,7 @@ bool HeadwayTracker::safeDistance(){
 
 double HeadwayTracker::readDistance(){
 			
-	gpioTrigger(TRIGGER, 10, 0); // inputs: pin Number, number of microseconds, high or low
+	//gpioTrigger(TRIGGER, 10, 0); // inputs: pin Number, number of microseconds, high or low
 	
 	while (measuring){
 		gpioDelay(10);
@@ -46,7 +47,7 @@ void HeadwayTracker::_measure(int gpio, int level, uint32_t tick){
 		
 		else if (level == 0){ // if it finishes measuring distance
 			pulseWidth = tick - pulseWidth;
-			if (pulseWidth < 0)
+			if (pulseWidth > 0)
 				measurement = pulseWidth / 1000.0; // meters
 			measuring = false;
 		}
