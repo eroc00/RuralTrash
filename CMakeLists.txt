@@ -61,6 +61,9 @@ target_link_libraries(EdgeDetectorTest ${OpenCV_LIBS})
 add_executable(VideoCapture FunctionalTests/VideoCapture.cpp)
 target_link_libraries(VideoCapture ${raspicam_CV_LIBS} ${OpenCV_LIBS})
 
+add_executable(servodemo build/servo_demo.cpp)
+target_link_libraries(servodemo pigpio)
+
 # build the unit tests
 enable_testing()
 add_executable(unit_tests ${MODULES} catch.hpp unit_tests.cpp vehicle_code_unit_tests.cpp)

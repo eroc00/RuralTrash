@@ -4,21 +4,25 @@
 
 int main(int argc, char** argv){
 
-	/*
+	
 	if(gpioInitialise() < 0){
 		std::cerr << "Initialization failed \n";
 		return -1;
 	}
-*/
 
-	//Movement motors;
+	gpioSetMode(6, PI_OUTPUT);
+	gpioWrite(6, 1);
+
+
+
+	Movement motors;
 	PWMPair signal;
 	bool done = false;
 	std::string line;
 	
 	// Set Motors to 0 speed
 	signal(511, 511);
-	//motors(signal);
+	motors(signal);
 
 	std::cout << "Enter a pair of numbers (num1 num2) "
 		 << "in the range 0-1023 to set motor speeds. Type 'exit' to end program.  \n";
@@ -45,7 +49,7 @@ int main(int argc, char** argv){
 		std::cout << "Left Motor at " << signal.left() << std::endl;
 		std::cout << "Right Motor at " << signal.right() << std::endl << std::endl;
 
-		//motors(signal);
+		motors(signal);
 
 	}
 
