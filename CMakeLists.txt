@@ -38,7 +38,7 @@ set(MODULES Header/PinDefs.hpp
 	    Header/LateralController.hpp
 	    Header/Movement.hpp Header/Movement.cpp
 	    Header/OpController.hpp Header/OpController.cpp
-	    Header/Receiver.hpp
+	    Header/Receiver.hpp Header/Receiver.cpp
 	    Header/HeadwayTracker.hpp Header/HeadwayTracker.cpp
 	    Header/ImageProcessor.hpp)
 
@@ -57,12 +57,15 @@ add_executable(MotorTest
 target_link_libraries(MotorTest pigpio)
 
 add_executable(EdgeDetectorTest FunctionalTests/EdgeDetection.cpp)
-target_link_libraries(EdgeDetectorTest ${OpenCV_LIBS}) 
+target_link_libraries(EdgeDetectorTest ${OpenCV_LIBS})
 
 add_executable(VideoCapture FunctionalTests/VideoCapture.cpp)
 target_link_libraries(VideoCapture ${raspicam_CV_LIBS} ${OpenCV_LIBS})
 
-add_executable(ReceiverTest FunctionalTests/ReceiverTest.cpp)
+add_executable(ReceiverTest
+		Header/Receiver.hpp
+		Header/Receiver.cpp
+		FunctionalTests/ReceiverTest.cpp)
 target_link_libraries(ReceiverTest pigpio)
 
 # build the unit tests

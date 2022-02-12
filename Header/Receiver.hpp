@@ -1,65 +1,49 @@
-#pragma 
+#pragma once 
 #include <pigpio.h>
+#include <stdint.h>
 #include "DataStructures.hpp"
 #include "PinDefs.hpp"
 
-// Analog Read: http://wiringpi.com/reference/core-functions/
-// 
-// Likely to be PWM signals
 
-// More testing to be done during Functional Tests
-
+/** Class to read signals from the RC Receiver **/
 class Receiver {
 public:
 
-	Receiver() {
-		gpioSetMode(CH1, PI_ALT5);
-		gpioSetMode(CH2, PI_ALT5);
-
-	}
+	Receiver();
 
 	~Receiver() = default;
 
-	PWMPair& read() {
+	PWMPair& readAnalogStick();
 
-	}
-	
-	// EVERYTHING ON RECEIVER SENDS DATA IN PULSEWIDTHS
-	
-	void _callbackExt(int gpio, int level, uint32_t tick){
-	HeadwayTracker* self = (HeadwayTracker *) user;
-	
-	self->_measure(gpio, level, tick);
-	
-}
+	bool readLeftSwitch();
 
-	void HeadwayTracker::_measure(int gpio, int level, uint32_t tick){
-		
-		if (level == 1){ // if it starts measuring distance
-				pulseWidth = tick;
-				gpioSetWatchdog(gpio, TIMEOUT);
-				/measuring = true;
-			
-			}
-			
-			else if (level == 0){ // if it finishes measuring distance
-				pulseWidth = tick - pulseWidth;
-				if (pulseWidth > 0)
-					measurement = pulseWidth / 1000.0; // meters
-				//measuring = false;
-			}
-			
-			else{ // if distance is too far for LiDAR; watchdog timed out
-				measurement = MIN_DIST + (MIN_DIST/2.0);
-				//measuring = false;
-				
-			}
-		
-		
-	}
-
+	bool readRightSwitch();
 
 private:
+
+	struct PinData {
+		unsigned int measurement = 0;
+		unsigned int pulseWidth = 0;
+		bool measuring = false;
+	};
+
+	//** Signal indexes **//
+	// index = gpioPin - 17;	[0, 3]
+	// 0: Left Switch
+	// 1: Joystick Up/Down
+	// 2: Joystick Left/Right
+	// 3: Right Switch
+	PinData rcSignals[4];
+
 	PWMPair signal;
 
+	// Private Functions
+
+	// EVERYTHING ON RECEIVER SENDS DATA IN PULSEWIDTHS
+	static void _callbackExt(int gpio, int level, uint32_t tick, void* user);
+
+	void _measure(int gpio, int level, uint32_t tick);
+
+
 };
+

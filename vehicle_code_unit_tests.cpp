@@ -77,18 +77,6 @@ TEST_CASE("Test Operational Controller", "[OpController]") {
 
 }
 
-TEST_CASE("Test Remote Controller Receiver class", "[Receiver]") {
-
-    Receiver rcSignal;
-
-    PWMPair signal = rcSignal.read();
-
-    REQUIRE(signal.left() == 512);
-    REQUIRE(signal.left() == 512);
-
-
-}
-
 TEST_CASE("Test Duration of Functions", "[Timing]") {
 
     using namespace std::chrono;
