@@ -34,7 +34,7 @@ find_Package(raspicam REQUIRED)
 #target_link_libraries( [executable, ${raspicam_LIBS} )
 
 set(MODULES Header/PinDefs.hpp
-	    Header/DataStructures.hpp 
+	    Header/DataStructures.hpp Header/DataStructures.cpp 
 	    Header/LateralController.hpp
 	    Header/Movement.hpp Header/Movement.cpp
 	    Header/OpController.hpp Header/OpController.cpp
