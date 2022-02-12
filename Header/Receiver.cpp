@@ -24,10 +24,11 @@ Receiver::Receiver(){
 SignalPair& Receiver::readAnalogStick(){
 
 	// Debugging
-	std::cout << "Up/Down: " << rcSignals[1].measurement << std::endl;
-	std::cout << "Left/Right: " << rcSignals[2].measurement << std::endl;
+	std::cout << "Raw Up/Down signal: " << rcSignals[1].measurement << std::endl;
+	std::cout << "Raw Left/Right signal: " << rcSignals[2].measurement << std::endl;
 
-
+	signal(changeBounds(1000, 2000, 1023, rcSignals[1].measurement), 
+		changeBounds(1000, 2000, 1023, rcSignals[2].measurement);
 
 	return signal;
 
