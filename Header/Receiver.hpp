@@ -13,19 +13,49 @@ class Receiver {
 public:
 
 	Receiver() {
-		gpioSetMode(SIGNAL1, PI_ALT5);
-		gpioSetMode(SIGNAL2, PI_ALT5);
+		gpioSetMode(CH1, PI_ALT5);
+		gpioSetMode(CH2, PI_ALT5);
 
 	}
 
 	~Receiver() = default;
 
 	PWMPair& read() {
-#ifdef UNIT_TESTING
-		return signal(512, 512);
-#else
-		//return signal(analogRead(SIGNAL1), analogRead(SIGNAL2));
-#endif
+
+	}
+	
+	// EVERYTHING ON RECEIVER SENDS DATA IN PULSEWIDTHS
+	
+	void _callbackExt(int gpio, int level, uint32_t tick){
+	HeadwayTracker* self = (HeadwayTracker *) user;
+	
+	self->_measure(gpio, level, tick);
+	
+}
+
+	void HeadwayTracker::_measure(int gpio, int level, uint32_t tick){
+		
+		if (level == 1){ // if it starts measuring distance
+				pulseWidth = tick;
+				gpioSetWatchdog(gpio, TIMEOUT);
+				/measuring = true;
+			
+			}
+			
+			else if (level == 0){ // if it finishes measuring distance
+				pulseWidth = tick - pulseWidth;
+				if (pulseWidth > 0)
+					measurement = pulseWidth / 1000.0; // meters
+				//measuring = false;
+			}
+			
+			else{ // if distance is too far for LiDAR; watchdog timed out
+				measurement = MIN_DIST + (MIN_DIST/2.0);
+				//measuring = false;
+				
+			}
+		
+		
 	}
 
 

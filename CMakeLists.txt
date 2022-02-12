@@ -33,7 +33,8 @@ include_directories( ${OpenCV_INCLUDE_DIRS})
 find_Package(raspicam REQUIRED)
 #target_link_libraries( [executable, ${raspicam_LIBS} )
 
-set(MODULES Header/DataStructures.hpp 
+set(MODULES Header/PinDefs.hpp
+	    Header/DataStructures.hpp 
 	    Header/LateralController.hpp
 	    Header/Movement.hpp Header/Movement.cpp
 	    Header/OpController.hpp Header/OpController.cpp
@@ -61,8 +62,8 @@ target_link_libraries(EdgeDetectorTest ${OpenCV_LIBS})
 add_executable(VideoCapture FunctionalTests/VideoCapture.cpp)
 target_link_libraries(VideoCapture ${raspicam_CV_LIBS} ${OpenCV_LIBS})
 
-add_executable(servodemo build/servo_demo.cpp)
-target_link_libraries(servodemo pigpio)
+add_executable(ReceiverTest FunctionalTests/ReceiverTest.cpp)
+target_link_libraries(ReceiverTest pigpio)
 
 # build the unit tests
 enable_testing()

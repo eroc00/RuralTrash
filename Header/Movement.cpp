@@ -3,8 +3,6 @@
 #include "Movement.hpp"
 
 //#define DEVICE "/dev/tty0" // sudo dmesg | grep tty
-#define RESIS 10E3
-#define CAP 0.1E-6
 #define FREQUENCY 2000
 
 Movement::Movement(){
@@ -28,17 +26,27 @@ Movement::~Movement() {
 void Movement::operator()(PWMPair& signal){
 
 
-	gpioServo(LEFTMOTOR, toPulseWidth(signal.left()));
-	gpioServo(RIGHTMOTOR, toPulseWidth(signal.right()));
+	gpioServo(LEFTMOTOR, toPulseWidth(MAXPWMVAL - signal.left()));
+	gpioServo(RIGHTMOTOR, toPulseWidth(MAXPWMVAL - signal.right()));
 
 }
 
+
+/***********
+	Converts a value with a range of 0-1023 to a range 
+	of 1000-2000 (for pulsewidth timings in nanoseconds)
+
+	@param pwmSig - The PWM signal [0, 1023] to convert
+
+	@output the desired pulsewidth [1000, 2000] given a value
+*/
 unsigned int Movement::toPulseWidth(unsigned int pwmSig){
 
-	return (pwmSig*1000/1023) + 1000;
+	return (pwmSig*1000/MAXPWMVAL) + 1000;
 
 }
 
+// Not used in implementation
 unsigned int Movement::sensitiveMode(unsigned int sig){
 	if (sig < 384)
 		sig = 384;

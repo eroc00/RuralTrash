@@ -1,5 +1,7 @@
 #pragma once
 
+#define MAXPWMVAL 1023
+
 struct PWMPair {
 
 	PWMPair() : bits(0) {}
@@ -27,8 +29,8 @@ private:
 	unsigned int bits;
 
 	void bpf(unsigned int& num){
-		if (num > 1023)
-			num = 1023;
+		if (num > MAXPWMVAL)
+			num = MAXPWMVAL;
 	}
 
 };

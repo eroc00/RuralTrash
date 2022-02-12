@@ -10,11 +10,6 @@ int main(int argc, char** argv){
 		return -1;
 	}
 
-	gpioSetMode(6, PI_OUTPUT);
-	gpioWrite(6, 1);
-
-
-
 	Movement motors;
 	PWMPair signal;
 	bool done = false;
