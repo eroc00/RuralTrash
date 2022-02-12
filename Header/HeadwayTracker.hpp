@@ -3,11 +3,10 @@
 
 /*
 	The HeadwayTracker class abstracts the functionality of the GArmin v3 LiDAR
-	for software implementation. This class uses PWM to interface with the sensor.
+	for software implementation. This class uses Pulse Widths to interface with the sensor.
 
 	LiDAR Module: https://www.garmin.com/en-US/p/557294/pn/010-01722-00#specs
 	Datasheet: https://static.garmin.com/pumac/LIDAR_Lite_v3_Operation_Manual_and_Technical_Specifications.pdf
-	12C Implementation: https://github.com/garmin/LIDARLite_Arduino_Library/tree/master/src
 
 */
 

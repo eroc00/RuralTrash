@@ -21,7 +21,7 @@ Receiver::Receiver(){
 
 }
 
-PWMPair& Receiver::readAnalogStick(){
+SignalPair& Receiver::readAnalogStick(){
 
 	// Debugging
 	std::cout << "Up/Down: " << rcSignals[1].measurement << std::endl;
@@ -61,7 +61,7 @@ void Receiver::_measure(int gpio, int level, uint32_t tick){
 	if (level == 1){ // start measuring pulsewidth
 			rcSignals[gpio].pulseWidth = tick;
 			gpioSetWatchdog(gpio, TIMEOUT);
-			rcSignals[gpio].measuring = true;
+			//rcSignals[gpio].measuring = true;
 
 	}
 
@@ -69,12 +69,12 @@ void Receiver::_measure(int gpio, int level, uint32_t tick){
 		rcSignals[gpio].pulseWidth = tick - rcSignals[gpio].pulseWidth;
 		if (rcSignals[gpio].pulseWidth > 0)
 			rcSignals[gpio].measurement = rcSignals[gpio].pulseWidth / 1000.0; // meters
-		rcSignals[gpio].measuring = false;
+		//rcSignals[gpio].measuring = false;
 	}
 
 	else{ // Timed out
 		rcSignals[gpio].measurement = 1500;
-		rcSignals[gpio].measuring = false;
+		//rcSignals[gpio].measuring = false;
 
 	}
 

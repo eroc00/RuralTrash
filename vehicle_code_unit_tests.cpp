@@ -15,7 +15,7 @@
 std::chrono::system_clock::duration timeFunction(void* func);
 
 TEST_CASE("Test Data Structures", "[DataStructures]") {
-    PWMPair signals;
+    SignalPair signals;
 
     // Test default constructor
     REQUIRE(signals.left() == 0);
@@ -101,7 +101,7 @@ TEST_CASE("Test Duration of Functions", "[Timing]") {
 
 TEST_CASE("Test angle to motor signal function", "[LateralController]") {
 
-    PWMPair signals;
+    SignalPair signals;
 
     angleToMotorSignal(0, signals);
 

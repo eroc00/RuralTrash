@@ -11,7 +11,7 @@ int main(int argc, char** argv){
 	}
 
 	Movement motors;
-	PWMPair signal;
+	SignalPair signal;
 	bool done = false;
 	std::string line;
 	

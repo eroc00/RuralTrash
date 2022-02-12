@@ -13,7 +13,7 @@ public:
 
 	~Receiver() = default;
 
-	PWMPair& readAnalogStick();
+	SignalPair& readAnalogStick();
 
 	bool readLeftSwitch();
 
@@ -24,7 +24,7 @@ private:
 	struct PinData {
 		unsigned int measurement = 0;
 		unsigned int pulseWidth = 0;
-		bool measuring = false;
+		//bool measuring = false;
 	};
 
 	//** Signal indexes **//
@@ -35,7 +35,7 @@ private:
 	// 3: Right Switch
 	PinData rcSignals[4];
 
-	PWMPair signal;
+	SignalPair signal;
 
 	// Private Functions
 

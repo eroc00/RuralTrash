@@ -14,13 +14,13 @@ public:
 
 	~Movement();
 
-	void operator()(PWMPair& signal);
+	void operator()(SignalPair& signal);
 
 
 private:
-	PWMPair prevSignal;
+	SignalPair prevSignal;
 	int handle;
 	unsigned int toPulseWidth(unsigned int pwmSig);
-	unsigned int sensitiveMode(unsigned int pwmSig);
+	//unsigned int sensitiveMode(unsigned int pwmSig);
 
 };

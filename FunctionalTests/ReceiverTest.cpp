@@ -14,7 +14,7 @@ int main(int argc, char** argv){
 
 	// Code goes here
 	Receiver rc;
-	PWMPair* signals;
+	SignalPair* signals;
 	
 	
 	std::cout << "Press the enter key to read values "

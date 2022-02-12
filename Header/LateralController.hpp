@@ -16,7 +16,7 @@ public:
 
 
 	// outputs PWM signal to turn signal a certain number of degrees
-	PWMPair& operator()(unsigned int distance, double angle) {
+	SignalPair& operator()(unsigned int distance, double angle) {
 
 		// calculate angle required to turn
 
@@ -39,7 +39,7 @@ private:
 	//unsigned int setDistance; // distance from road
 	long previousOutput; // previous angle for feedback loop
 
-	PWMPair out;
+	SignalPair out;
 
 
 };
@@ -55,7 +55,7 @@ unsigned int speedToPWMSignal(double speed) {
 	return (speed / MAXSPEED) * 1023;
 }
 
-void angleToMotorSignal(const double& angle, PWMPair& signals) {
+void angleToMotorSignal(const double& angle, SignalPair& signals) {
 
 	// TODO: Initializing is slow; find a way to remove that
 

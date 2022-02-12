@@ -2,12 +2,12 @@
 
 #define MAXPWMVAL 1023
 
-struct PWMPair {
+struct SignalPair {
 
-	PWMPair() : bits(0) {}
+	SignalPair() : bits(0) {}
 	
 	// input
-	PWMPair& operator()(unsigned int a, unsigned int b) {
+	SignalPair& operator()(unsigned int a, unsigned int b) {
 		
 		// Keep numbers between 0 and 1023
 		bpf(a); bpf(b);
@@ -34,3 +34,4 @@ private:
 	}
 
 };
+

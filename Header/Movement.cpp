@@ -23,7 +23,7 @@ Movement::~Movement() {
 
 }
 
-void Movement::operator()(PWMPair& signal){
+void Movement::operator()(SignalPair& signal){
 
 
 	gpioServo(LEFTMOTOR, toPulseWidth(MAXPWMVAL - signal.left()));
@@ -45,17 +45,6 @@ unsigned int Movement::toPulseWidth(unsigned int pwmSig){
 	return (pwmSig*1000/MAXPWMVAL) + 1000;
 
 }
-
-// Not used in implementation
-unsigned int Movement::sensitiveMode(unsigned int sig){
-	if (sig < 384)
-		sig = 384;
-	return sig;
-}
-
-//void Movement::moveMotor(bool motor, unsigned int signal){
-	
-
 
 
 
