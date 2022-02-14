@@ -50,4 +50,5 @@ private:
 	// TODO: Create a file object to log messages into.
 
     // Test Comment
+    // Test Comment 2
 };
