@@ -31,48 +31,50 @@ include_directories( ${OpenCV_INCLUDE_DIRS})
 #target_link_libraries( [executable], ${OpenCV_LIBS} )
 
 find_Package(raspicam REQUIRED)
-#target_link_libraries( [executable, ${raspicam_LIBS} )
+#target_link_libraries( [executable], ${raspicam_LIBS} )
 
 set(MODULES Header/PinDefs.hpp
 	    Header/DataStructures.hpp Header/DataStructures.cpp 
-	    Header/LateralController.hpp
 	    Header/Movement.hpp Header/Movement.cpp
 	    Header/OpController.hpp Header/OpController.cpp
 	    Header/Receiver.hpp Header/Receiver.cpp
 	    Header/HeadwayTracker.hpp Header/HeadwayTracker.cpp
-	    Header/ImageProcessor.hpp)
+	    Header/ImageProcessor.hpp
+	    Header/LateralController.hpp)
 
 # make executable
 #add_executable(vehicle_code ${MODULES} main.cpp)
-add_executable(HeadwayTrackerTest 
-		Header/HeadwayTracker.hpp
-		Header/HeadwayTracker.cpp
-		FunctionalTests/HeadwayTrackerTest.cpp)
-target_link_libraries(HeadwayTrackerTest pigpio)
+#target_link_libraries(vehicle_code pigpio ${OpenCV_LIBS} ${raspicam_CV_LIBS})
 
-add_executable(MotorTest
-		Header/DataStructures.hpp Header/DataStructures.cpp
-		Header/Movement.hpp Header/Movement.cpp
-		FunctionalTests/MotorTest.cpp)
-target_link_libraries(MotorTest pigpio)
+#add_executable(HeadwayTrackerTest 
+#		Header/HeadwayTracker.hpp Header/HeadwayTracker.cpp
+#		Tests/HeadwayTrackerTest.cpp)
+#target_link_libraries(HeadwayTrackerTest pigpio)
 
-add_executable(EdgeDetectorTest FunctionalTests/EdgeDetection.cpp)
+#add_executable(MotorTest
+#		Header/DataStructures.hpp Header/DataStructures.cpp
+#		Header/Movement.hpp Header/Movement.cpp
+#		Tests/MotorTest.cpp)
+#target_link_libraries(MotorTest pigpio)
+
+#add_executable(ReceiverTest
+#		Header/OpController.hpp Header/OpController.cpp
+#		Header/DataStructures.hpp Header/DataStructures.cpp
+#		Header/Movement.hpp Header/Movement.cpp
+#		Header/Receiver.hpp Header/Receiver.cpp
+#		Tests/ReceiverTest.cpp)
+#target_link_libraries(ReceiverTest pigpio)
+
+
+add_executable(EdgeDetectorTest Tests/EdgeDetection.cpp)
 target_link_libraries(EdgeDetectorTest ${OpenCV_LIBS})
 
-add_executable(VideoCapture FunctionalTests/VideoCapture.cpp)
+add_executable(VideoCapture Tests/VideoCapture.cpp)
 target_link_libraries(VideoCapture ${raspicam_CV_LIBS} ${OpenCV_LIBS})
-
-add_executable(ReceiverTest
-		Header/OpController.hpp Header/OpController.cpp
-		Header/DataStructures.hpp Header/DataStructures.cpp
-		Header/Movement.hpp Header/Movement.cpp
-		Header/Receiver.hpp Header/Receiver.cpp
-		FunctionalTests/ReceiverTest.cpp)
-target_link_libraries(ReceiverTest pigpio)
 
 # build the unit tests
 enable_testing()
-add_executable(unit_tests ${MODULES} catch.hpp unit_tests.cpp vehicle_code_unit_tests.cpp)
+add_executable(unit_tests ${MODULES} Tests/catch.hpp Tests/unit_tests.cpp Tests/vehicle_code_unit_tests.cpp)
 target_link_libraries(unit_tests pigpio)
 add_test(unit_tests unit_tests)
 

@@ -3,10 +3,6 @@
 #include "PinDefs.hpp"
 #include <pigpio.h>
 
-//#define BAUDRATE 19200 // Hz
-//#define PWM_RANGE 1023
-
-/* Movement Class must be tested during Functional Testing Phase */
 
 class Movement {
 public:
@@ -15,6 +11,8 @@ public:
 	~Movement();
 
 	void operator()(SignalPair& signal);
+
+	void stop();
 
 
 private:

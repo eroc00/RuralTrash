@@ -1,6 +1,6 @@
 #pragma once
 
-enum Mode{standby, manual, test_auto, automatic};
+enum Mode{standby, manual, test_auto, automatic, transition_state};
 
 class OpController {
 

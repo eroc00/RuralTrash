@@ -18,17 +18,28 @@ Movement::Movement(){
 }
 
 Movement::~Movement() {
-	//serClose(handle);
-	
-
+	stop();
 }
 
+/***********
+	Sends signals to motor
+
+*/
 void Movement::operator()(SignalPair& signal){
 
 
 	gpioServo(LEFTMOTOR, toPulseWidth(MAXPWMVAL - signal.left()));
 	gpioServo(RIGHTMOTOR, toPulseWidth(MAXPWMVAL - signal.right()));
 
+}
+
+/***********
+	Sets motor speeds to 0 mph
+
+*/
+void Movement::stop() {
+	gpioServo(LEFTMOTOR, toPulseWidth(511));
+	gpioServo(RIGHTMOTOR, toPulseWidth(511));
 }
 
 

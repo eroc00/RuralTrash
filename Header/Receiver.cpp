@@ -19,6 +19,10 @@ Receiver::Receiver(){
 	gpioSetAlertFuncEx(CH5, _callbackExt, (void*)this);
 	gpioSetAlertFuncEx(CH6, _callbackExt, (void*)this);
 
+	signal(511, 511);
+	lbSwitch = false;
+	rbSwitch = false;
+
 }
 
 SignalPair& Receiver::readAnalogStick(){
@@ -31,6 +35,19 @@ SignalPair& Receiver::readAnalogStick(){
 		changeBounds(1000, 2000, 1023, rcSignals[1].measurement));
 
 	return signal;
+
+}
+
+int Receiver::getSwitchState() {
+	lbSwitch = readLeftSwitch();
+	rbSwitch = readRightSwitch();
+	return (( lbSwitch << 1) | (rbSwitch));
+
+}
+
+bool Receiver::changedSwitches() {
+
+	return (readLeftSwitch() ^ lbSwitch) || (readRightSwitch() ^ rbSwitch);
 
 }
 

@@ -15,6 +15,10 @@ public:
 
 	SignalPair& readAnalogStick();
 
+	int getSwitchState();
+
+	bool changedSwitches();
+
 	bool readLeftSwitch();
 
 	bool readRightSwitch();
@@ -35,7 +39,12 @@ private:
 	// 3: Right Switch
 	PinData rcSignals[4];
 
+	// Analog Signals received from remote
 	SignalPair signal;
+
+	// Button states
+	bool lbSwitch;
+	bool rbSwitch;
 
 	// Private Functions
 

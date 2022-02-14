@@ -13,24 +13,28 @@
 #include <stdint.h>
 #include "PinDefs.hpp"
 
-#define MIN_DIST	0.5// meters
+#define MIN_DIST	2// meters
 #define TIMEOUT 100 //milliseconds
 
 class HeadwayTracker {
 public:
 
-	HeadwayTracker();
+	HeadwayTracker(double thresh = MIN_DIST);
 
 	// Returns true if it measures a value greater than the safe distance
 	bool safeDistance();
 
-	// TODO: Send LOW signal to TRIGGER pin and measure MONITOR pin. Set back to high when done
+	// Send LOW signal to TRIGGER pin and measure MONITOR pin
 	double readDistance();
+
+	// Changes the threshold value
+	void setDistanceThreshold(double thr);
 	
 
 
 private:
 	double measurement;
+	double _mindist;
 	uint32_t pulseWidth;
 	bool measuring;
 

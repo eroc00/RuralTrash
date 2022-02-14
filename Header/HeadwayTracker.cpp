@@ -2,21 +2,25 @@
 #include <pigpio.h>
 #include <iostream>
 
-HeadwayTracker::HeadwayTracker(){
+HeadwayTracker::HeadwayTracker(double thresh){
 	gpioSetMode(TRIGGER, PI_OUTPUT);
 	gpioWrite(TRIGGER, 0);
 	gpioSetMode(MONITOR, PI_INPUT);
-	measurement = 2*MIN_DIST + (MIN_DIST/2.0);
+	_mindist = thresh;
+	measurement = 1.5 * _mindist;
 	pulseWidth = 0;
 	measuring = false;
 	gpioSetAlertFuncEx(MONITOR, _callbackExt, (void*)this);
+
 	
 }
 
 bool HeadwayTracker::safeDistance(){
-	return (readDistance() > MIN_DIST);
+	return (readDistance() > _mindist);
 	
 }
+
+void HeadwayTracker::setDistanceThreshold(double thr) { _mindist = thr; }
 
 double HeadwayTracker::readDistance(){
 			
@@ -53,7 +57,7 @@ void HeadwayTracker::_measure(int gpio, int level, uint32_t tick){
 		}
 		
 		else{ // if distance is too far for LiDAR; watchdog timed out
-			measurement = MIN_DIST + (MIN_DIST/2.0);
+			measurement = _mindist + (_mindist/2.0);
 			measuring = false;
 			
 		}
