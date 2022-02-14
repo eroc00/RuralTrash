@@ -24,11 +24,11 @@ Receiver::Receiver(){
 SignalPair& Receiver::readAnalogStick(){
 
 	// Debugging
-	std::cout << "Raw Up/Down signal: " << rcSignals[1].measurement << std::endl;
-	std::cout << "Raw Left/Right signal: " << rcSignals[2].measurement << std::endl;
+	std::cout << "Left Motor Signal: " << rcSignals[2].measurement << std::endl;
+	std::cout << "Right Motor Signal: " << rcSignals[1].measurement << std::endl;
 
-	signal(changeBounds(1000, 2000, 1023, rcSignals[1].measurement), 
-		changeBounds(1000, 2000, 1023, rcSignals[2].measurement);
+	signal(changeBounds(1000, 2000, 1023, rcSignals[2].measurement), 
+		changeBounds(1000, 2000, 1023, rcSignals[1].measurement));
 
 	return signal;
 
@@ -36,12 +36,14 @@ SignalPair& Receiver::readAnalogStick(){
 
 bool Receiver::readLeftSwitch(){
 
+	std::cout << "Left switch raw data: " << rcSignals[0].measurement << std::endl;
 	return rcSignals[0].measurement > SWITCH_THRESH;
 
 }
 
 bool Receiver::readRightSwitch(){
 
+	std::cout << "Right switch raw data: " << rcSignals[3].measurement << std::endl;
 	return rcSignals[3].measurement > SWITCH_THRESH;
 
 }
@@ -58,6 +60,7 @@ void Receiver::_measure(int gpio, int level, uint32_t tick){
 
 	gpio = gpio - 17;
 	gpio = gpio > 3 ? 3 : gpio;
+	//std::cout << "Reading pin " << gpio << std::endl;
 
 	if (level == 1){ // start measuring pulsewidth
 			rcSignals[gpio].pulseWidth = tick;
@@ -69,7 +72,7 @@ void Receiver::_measure(int gpio, int level, uint32_t tick){
 	else if (level == 0){ // stop measuring pulsewidth and update measurement
 		rcSignals[gpio].pulseWidth = tick - rcSignals[gpio].pulseWidth;
 		if (rcSignals[gpio].pulseWidth > 0)
-			rcSignals[gpio].measurement = rcSignals[gpio].pulseWidth / 1000.0; // meters
+			rcSignals[gpio].measurement = rcSignals[gpio].pulseWidth; // meters
 		//rcSignals[gpio].measuring = false;
 	}
 

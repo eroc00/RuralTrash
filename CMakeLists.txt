@@ -51,8 +51,8 @@ add_executable(HeadwayTrackerTest
 target_link_libraries(HeadwayTrackerTest pigpio)
 
 add_executable(MotorTest
-		Header/Movement.hpp
-		Header/Movement.cpp
+		Header/DataStructures.hpp Header/DataStructures.cpp
+		Header/Movement.hpp Header/Movement.cpp
 		FunctionalTests/MotorTest.cpp)
 target_link_libraries(MotorTest pigpio)
 
@@ -63,8 +63,10 @@ add_executable(VideoCapture FunctionalTests/VideoCapture.cpp)
 target_link_libraries(VideoCapture ${raspicam_CV_LIBS} ${OpenCV_LIBS})
 
 add_executable(ReceiverTest
-		Header/Receiver.hpp
-		Header/Receiver.cpp
+		Header/OpController.hpp Header/OpController.cpp
+		Header/DataStructures.hpp Header/DataStructures.cpp
+		Header/Movement.hpp Header/Movement.cpp
+		Header/Receiver.hpp Header/Receiver.cpp
 		FunctionalTests/ReceiverTest.cpp)
 target_link_libraries(ReceiverTest pigpio)
 

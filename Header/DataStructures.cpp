@@ -28,6 +28,6 @@ void SignalPair::bpf(unsigned int& num) {
 
 unsigned int changeBounds(unsigned int lowerB, unsigned int higherB, unsigned int newHigherBound, unsigned int value) {
 
-	return (pwmSig * (higherB - lowerB) / newHigherBound) + lowerB;
+	return ((value - lowerB)/(float)(higherB - lowerB))*newHigherBound;
 
 }

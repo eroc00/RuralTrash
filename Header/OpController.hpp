@@ -10,6 +10,8 @@ public:
 
 	Mode currMode() const; // can use switch case when calling this
 
+	Mode setMode(int mode);
+
 	void up();
 
 	void down();
