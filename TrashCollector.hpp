@@ -35,6 +35,7 @@ private:
 	HeadwayTracker lidar;
 	Movement motors;
 	Receiver rc;
+	SignalPair signals;
 	ImageProcessor camera;
 	LateralController pdCon;
 	bool running;
