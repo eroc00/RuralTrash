@@ -5,7 +5,7 @@ TrashCollector::TrashCollector(double distance_threshold) {
 	reset();
 	lidar.setDistanceThreshold(distance_threshold);
 	running = true;
-	
+
 }
 
 TrashCollector::~TrashCollector() {
@@ -72,7 +72,7 @@ void TrashCollector::checkState() {
 		// Forcefully transition to standby state if an obstacle
 		// is in front of the Trash Collector
 		mode.disable();
-		reset(); 
+		reset();
 	}
 
 }
@@ -95,18 +95,24 @@ void TrashCollector::manualMode() {
 /***********
 	TODO: Implement straight-line autonomy
 
-	Goal: Move Trash Collector forward indefinitely until it senses an 
+	Goal: Move Trash Collector forward indefinitely until it senses an
 			obstacle in front of it.
 
-	SAFETY IMPROVEMENT: Move Trash Collector forward for some time (10 seconds) until 
-					it senses an obstacle in front of it, or until time runs out 
+	SAFETY IMPROVEMENT: Move Trash Collector forward for some time (10 seconds) until
+					it senses an obstacle in front of it, or until time runs out
 
 */
 void TrashCollector::testAutoMode() {
-	
 
+    if(lidar.safeDistance() == 0)
+    {
+        motors.stop();
+        return;
+    }
 
-
+    SignalPair signals;
+    signals(767, 767);
+    motors(signals);
 
 
 }
@@ -114,7 +120,7 @@ void TrashCollector::testAutoMode() {
 /***********
 	TODO: Implement roadside line following autonomy
 
-	Goal: Move Trash Collector forward, changing its steering angle based on 
+	Goal: Move Trash Collector forward, changing its steering angle based on
 			the line it detects between the ashpalt and terrain. Stop if it detects
 			an obstable in front of it.
 
