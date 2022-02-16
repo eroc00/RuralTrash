@@ -107,12 +107,11 @@ void TrashCollector::testAutoMode() {
     if(lidar.safeDistance() == 0)
     {
         motors.stop();
+		mode.setMode(1);
         return;
     }
 
-    SignalPair signals;
-    signals(767, 767);
-    motors(signals);
+    motors(signals(767, 767));
 
 
 }
