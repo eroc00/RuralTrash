@@ -24,27 +24,54 @@ int main(int argc, char** argv){
 	origimage = cv::imread("../TestImages/roadside.jpg");
 	cv::resize(origimage, image, cv::Size(1280, 960));
 
+	// Convert RGB img to HSV img
 	cv::cvtColor(image, hsvImg, cv::COLOR_RGB2HSV);
 
-	cv::inRange(hsvImg, 
-			cv::Scalar(15, 6, 127),
-			cv::Scalar(255, 255, 164), 
+	/* SEPARATE ROAD FROM TERRAIN */
+	cv::inRange(hsvImg, // non-Sunny road
+			cv::Scalar(0, 0, 0), // 0, 45, 0
+			cv::Scalar(60, 135, 122), // 60, 150, 122
 		    mask);
 
-	cv::inRange(hsvImg, 
-			cv::Scalar(15, 90, 0),
-			cv::Scalar(255, 255, 164), 
+	cv::inRange(hsvImg, // sunny road
+			cv::Scalar(80, 0, 0),
+			cv::Scalar(255, 41, 155), 
 		    maskSunny);
+		    
+		    // Segment Grass: lower-(30, 57, 0), upper-(255, 255, 218)
 
-	blur(maskSunny, edgeImg, cv::Size(blurDeviation, blurDeviation));
+	edgeImg = mask | maskSunny;
+	
+	/* ERODE/DILATE */
+	int dilation_size = 3;
+	int dilation_type = cv::MORPH_CROSS; // RECT, cross, ellipse
+	cv::Mat dilate_element = cv::getStructuringElement( cv::MORPH_ELLIPSE,
+						cv::Size( 2*dilation_size + 1, 2*dilation_size + 1), 
+						cv::Point( dilation_size, dilation_size ) );
+	
+	dilation_size = 5;
+	cv::Mat erode_element = cv::getStructuringElement( dilation_type,
+					cv::Size( 2*dilation_size + 1, 2*dilation_size + 1), 
+					cv::Point( dilation_size, dilation_size ) );
+
+	cv::dilate(edgeImg, edgeImg, dilate_element);
+	cv::erode(edgeImg, edgeImg, erode_element);
+
+	cv::imwrite("/home/pi/Desktop/TrueMask.jpg", edgeImg);
+
+	blur(edgeImg, edgeImg, cv::Size(blurDeviation, blurDeviation));
 	Canny(edgeImg, edgeImg, lowThr, max_lowThr, kernel_size);
 
 	// Hough Transform
 	std::vector<cv::Vec2f> lines;
-	cv::HoughLines(edgeImg, lines, 100, 0.8*CV_PI/(180), 400, 0, 0, 0, ANGLE_CUTOFF);
+	cv::HoughLines(edgeImg, lines, 25, 0.4*CV_PI/(180), 300, 0, 0, 0);
 
 	std::cout << "Lines found: " << lines.size() << std::endl;
-	for (std::size_t i = 0; i < lines.size(); i++){
+	cv::Point avgpt1, avgpt2;
+	size_t i = 0;
+	for (; 
+			i < lines.size() && i < 10;
+			i++){
 		float rho = lines[i][0], theta = lines[i][1];
 		cv::Point pt1, pt2;
 		double a = cos(theta), b = sin(theta);
@@ -54,15 +81,25 @@ int main(int argc, char** argv){
 		pt2.x = cvRound(x0 - 1000*(-b));
 		pt2.y = cvRound(y0 - 1000*a);
 		
-		if (i < 10)
-			std::cout << "Distance: " << rho
+		std::cout << "Distance: " << rho
 				  << " Angle: " << theta << std::endl;
 	
-		line( image, pt1, pt2, cv::Scalar(0, 0, 255), 5, cv::LINE_AA);
+		//line( image, pt1, pt2, cv::Scalar(0, 0, 255), 3, cv::LINE_AA);
 
-
+		avgpt1.x += cvRound(x0 + 1000*(-b));
+		avgpt1.y += cvRound(y0 + 1000*a);
+		avgpt2.x += cvRound(x0 - 1000*(-b));
+		avgpt2.y += cvRound(y0 - 1000*a);
 	}
-
+	
+	/* DRAW AVERAGE LINE */
+	if (i < 1) i = 1;
+	
+	avgpt1.x /= (double)i;
+	avgpt1.y /= (double)i;
+	avgpt2.x /= (double)i;
+	avgpt2.y /= (double)i;
+	line( image, avgpt1, avgpt2, cv::Scalar(255, 0, 0), 5, cv::LINE_AA);
 
 
 /*
@@ -101,7 +138,7 @@ int main(int argc, char** argv){
 	dst = Scalar::all(0);
 	image.copyTo(dst, edgeImg);
 */
-	cv::imwrite("/home/pi/Desktop/Mask.jpg", mask);
+	cv::imwrite("/home/pi/Desktop/MaskNonSunny.jpg", mask);
 
 	cv::imwrite("/home/pi/Desktop/MaskSunny.jpg", maskSunny);
 
