@@ -2,7 +2,7 @@
 #include <cstdlib>
 #include <iostream>
 
-#define DIST_THR 3
+#define DIST_THR 1
 
 
 int main() {

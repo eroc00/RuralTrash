@@ -1,5 +1,5 @@
 #include "TrashCollector.hpp"
-
+#include <iostream>
 
 TrashCollector::TrashCollector(double distance_threshold) {
 	reset();
@@ -45,9 +45,10 @@ void TrashCollector::run() {
 		case transition_state:
 			reset();
 			mode.setMode(nextState);
+			std::cout << "Now in mode "<< (int)nextState << std::endl;
 			break;
 
-		case default:
+		default:
 			reset();
 			running = false;
 
@@ -64,7 +65,7 @@ void TrashCollector::checkState() {
 
 	if (rc.changedSwitches()) { // Reads RC's button states
 		reset();
-		nextState = rc.getSwitchState();
+		nextState = (Mode)rc.getSwitchState();
 		mode.setMode(transition_state);
 	}
 	else if ((mode.currMode() == test_auto || mode.currMode() == automatic)
@@ -88,7 +89,7 @@ void TrashCollector::standByMode() { }
 void TrashCollector::manualMode() {
 
 	motors(rc.readAnalogStick());
-	delay(100000);
+	gpioDelay(100000);
 
 }
 
@@ -112,6 +113,7 @@ void TrashCollector::testAutoMode() {
     }
 
     motors(signals(767, 767));
+    gpioDelay(100000);
 
 
 }

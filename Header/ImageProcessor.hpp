@@ -3,7 +3,7 @@
 
 class ImageProcessor {
 public:
-	ImageProcessor();
+	ImageProcessor(){}
 
 	void takePicture();
 	void readImage(char*);

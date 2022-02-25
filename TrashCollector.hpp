@@ -7,7 +7,7 @@
 
 
 class TrashCollector {
-
+public:
 	// Default constructor.
 	// Usage: TrashCollector tc;
 	// NOTE: CANNOT CALL DEFAULT CONSTRUCTOR

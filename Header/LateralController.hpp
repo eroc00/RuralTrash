@@ -44,6 +44,7 @@ private:
 
 };
 
+/*
 unsigned int speedToPWMSignal(double speed) {
 
 	// Band Pass filter to read speeds in the range 0 <= speed <= MAXSPEED
@@ -71,11 +72,11 @@ void angleToMotorSignal(const double& angle, SignalPair& signals) {
 		rightWSpeed = MAXSPEED;
 	if (leftWSpeed > MAXSPEED)
 		leftWSpeed = MAXSPEED;
-	*/
+	*
 
 	signals(speedToPWMSignal(leftWSpeed), speedToPWMSignal(rightWSpeed));
 
 
 }
-
+*/
 

@@ -40,11 +40,12 @@ set(MODULES Header/PinDefs.hpp
 	    Header/Receiver.hpp Header/Receiver.cpp
 	    Header/HeadwayTracker.hpp Header/HeadwayTracker.cpp
 	    Header/ImageProcessor.hpp
-	    Header/LateralController.hpp)
+	    Header/LateralController.hpp
+	    TrashCollector.hpp TrashCollector.cpp)
 
 # make executable
-#add_executable(vehicle_code ${MODULES} main.cpp)
-#target_link_libraries(vehicle_code pigpio ${OpenCV_LIBS} ${raspicam_CV_LIBS})
+add_executable(vehicle_code ${MODULES} main.cpp)
+target_link_libraries(vehicle_code pigpio ${OpenCV_LIBS} ${raspicam_CV_LIBS})
 
 #add_executable(HeadwayTrackerTest 
 #		Header/HeadwayTracker.hpp Header/HeadwayTracker.cpp
@@ -66,17 +67,17 @@ set(MODULES Header/PinDefs.hpp
 #target_link_libraries(ReceiverTest pigpio)
 
 
-add_executable(EdgeDetectorTest Tests/EdgeDetection.cpp)
-target_link_libraries(EdgeDetectorTest ${OpenCV_LIBS})
+#add_executable(EdgeDetectorTest Tests/EdgeDetection.cpp)
+#target_link_libraries(EdgeDetectorTest ${OpenCV_LIBS})
 
-add_executable(VideoCapture Tests/VideoCapture.cpp)
-target_link_libraries(VideoCapture ${raspicam_CV_LIBS} ${OpenCV_LIBS})
+#add_executable(VideoCapture Tests/VideoCapture.cpp)
+#target_link_libraries(VideoCapture ${raspicam_CV_LIBS} ${OpenCV_LIBS})
 
 # build the unit tests
-enable_testing()
-add_executable(unit_tests ${MODULES} Tests/catch.hpp Tests/unit_tests.cpp Tests/vehicle_code_unit_tests.cpp)
-target_link_libraries(unit_tests pigpio)
-add_test(unit_tests unit_tests)
+#enable_testing()
+#add_executable(unit_tests ${MODULES} Tests/catch.hpp Tests/unit_tests.cpp Tests/vehicle_code_unit_tests.cpp)
+#target_link_libraries(unit_tests pigpio)
+#add_test(unit_tests unit_tests)
 
 # register Catch tests with cmake
 #include(Catch)
