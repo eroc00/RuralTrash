@@ -3,33 +3,26 @@
 #include <opencv2/opencv.hpp>
 #include <raspicam/raspicam_cv.h>
 #include <raspicam/cvversioning.h>
+#include <string>
 
-class cv::Mat;
-class raspicam::RaspiCam_Cv;
-class cv::Scalar;
-class cv::Size;
-class std::vector;
 
-typedef cv::Mat Image;
 typedef raspicam::RaspiCam_Cv Camera;
-
+typedef cv::Mat Image;
 
 class ImageProcessor {
 public:
-<<<<<<< HEAD
-	ImageProcessor(){}
-=======
+
 	ImageProcessor();
 	~ImageProcessor();
 
 	bool open();
->>>>>>> fb6b06299cec58c87caa483e1902170f8f731b83
 
 /*  Use camera sensor to capture and save a 960x1280 image */ 
 	void capture();
 
 /*	Read Image from local files*/
 	void readImage(char* imageName);
+	void saveImage(std::string imageName);
 
 /*  Capture an image and apply Hough Transform to obtain
 	distance from and orientation of the road */
@@ -55,7 +48,7 @@ private:
 	//unsigned int blurDev;
 
 	Camera b0055;
-	std::vector lines;
+	std::vector<cv::Vec2f> lines;
 
 	unsigned int lineIncr;
 

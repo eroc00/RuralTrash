@@ -72,7 +72,9 @@ void TrashCollector::checkState() {
 		&& !lidar.safeDistance()) {
 		// Forcefully transition to standby state if an obstacle
 		// is in front of the Trash Collector
-		mode.disable();
+		//mode.disable();
+		mode.setMode(transition_state);
+		nextState = (Mode)1;
 		reset();
 	}
 
@@ -105,14 +107,14 @@ void TrashCollector::manualMode() {
 */
 void TrashCollector::testAutoMode() {
 
-    if(lidar.safeDistance() == 0)
-    {
-        motors.stop();
-		mode.setMode(1);
-        return;
-    }
+   // if(lidar.safeDistance() == 0)
+    //{
+     //   motors.stop();
+//		mode.setMode(1);
+  //      return;
+   // }
 
-    motors(signals(767, 767));
+    motors(signals(767, 512));
     gpioDelay(100000);
 
 

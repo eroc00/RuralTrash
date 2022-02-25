@@ -1,4 +1,3 @@
-#pragma once
 #include "ImageProcessor.hpp"
 
 #define IMG_HEIGHT 960
@@ -10,15 +9,16 @@
 
 // Hough Transform params
 #define LINSEP 25
-#define ANGLESEP
-#define VOTE_THR 300
+#define ANGLESEP 0.4*(CV_PI/180)
+#define VOTE_THR 600
 
+#define COLUMNTOCHECK 1000
 
 ImageProcessor::ImageProcessor() {
-	
-	_im.create(IMG_HEIGHT, IMG_WIDTH, cv::CV_8UC3);
-	_mask.create(IMG_HEIGHT, IMG_WIDTH, cv::CV_8UC1);
-	_maskSunny.create(IMG_HEIGHT, IMG_WIDTH, cv::CV_8UC1);
+
+	_im.create(IMG_HEIGHT, IMG_WIDTH, CV_8UC3);
+	_mask.create(IMG_HEIGHT, IMG_WIDTH, CV_8UC1);
+	_maskSunny.create(IMG_HEIGHT, IMG_WIDTH, CV_8UC1);
 
 
 	_dilate_element = cv::getStructuringElement(cv::MORPH_ELLIPSE,
@@ -56,12 +56,23 @@ void ImageProcessor::capture() {
 	
 }
 
+void ImageProcessor::readImage(char* imageName){
+	_im = cv::imread(imageName);
+	cv::cvtColor(_im, _im, cv::COLOR_RGB2HSV);
+}
+
+void ImageProcessor::saveImage(std::string imageName){
+	capture();
+	imageName = "/home/pi/RuralTrash/TestImages/" + imageName;
+	cv::imwrite(imageName, _im);
+}
+
 /*  Capture an image and apply Hough Transform to obtain
 	distance from and orientation of the road */
 void ImageProcessor::getRoadCharacteristics(double& dist, double& angle) {
 
 	// Capture Image
-	takePicture();
+	capture();
 
 	// Convert to HSV
 	cv::cvtColor(_im, _im, cv::COLOR_RGB2HSV);
@@ -85,17 +96,26 @@ void ImageProcessor::getRoadCharacteristics(double& dist, double& angle) {
 }
 
 void ImageProcessor::averageLines(double& dist, double& angle) {
-	
-	for (lineIncr = 0; lineIncr < lines.size() && lineIncr < 10; i++) {
 
+	for (lineIncr = 0, dist = 0, angle = 0; 
+		lineIncr < lines.size() && lineIncr < 10; 
+		lineIncr++) {
 
+		dist += lines[lineIncr][0];
+		angle += lines[lineIncr][1];
 
 	}
+
+	if (lineIncr | 0) lineIncr = 1;
+	dist /= lineIncr;
+	angle /= lineIncr;
+
+	dist = getDistance(COLUMNTOCHECK, dist, angle);
 
 
 }
 
-void ImageProcessor::getDistance(unsigned int xVal, unsigned int linDist, double theta) {
+unsigned int ImageProcessor::getDistance(unsigned int xVal, unsigned int linDist, double theta) {
 	return -(sin(theta) / cos(theta))*xVal + (linDist / cos(theta)); // line spans from top to botton
 	//return -(cos(theta) / sin(theta))*xVal + (linDist / sin(theta)); // line spans from left to right
 }

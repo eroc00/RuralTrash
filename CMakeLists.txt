@@ -39,7 +39,7 @@ set(MODULES Header/PinDefs.hpp
 	    Header/OpController.hpp Header/OpController.cpp
 	    Header/Receiver.hpp Header/Receiver.cpp
 	    Header/HeadwayTracker.hpp Header/HeadwayTracker.cpp
-	    Header/ImageProcessor.hpp
+	    Header/ImageProcessor.hpp Header/ImageProcessor.cpp
 	    Header/LateralController.hpp
 	    TrashCollector.hpp TrashCollector.cpp)
 
@@ -47,10 +47,15 @@ set(MODULES Header/PinDefs.hpp
 add_executable(vehicle_code ${MODULES} main.cpp)
 target_link_libraries(vehicle_code pigpio ${OpenCV_LIBS} ${raspicam_CV_LIBS})
 
-#add_executable(HeadwayTrackerTest 
-#		Header/HeadwayTracker.hpp Header/HeadwayTracker.cpp
-#		Tests/HeadwayTrackerTest.cpp)
-#target_link_libraries(HeadwayTrackerTest pigpio)
+add_executable(sample_pics 
+		Header/ImageProcessor.hpp Header/ImageProcessor.cpp
+		Tests/sample_pics.cpp)
+target_link_libraries(sample_pics ${OpenCV_LIBS} ${raspicam_CV_LIBS})
+
+add_executable(HeadwayTrackerTest 
+		Header/HeadwayTracker.hpp Header/HeadwayTracker.cpp
+		Tests/HeadwayTrackerTest.cpp)
+target_link_libraries(HeadwayTrackerTest pigpio)
 
 #add_executable(MotorTest
 #		Header/DataStructures.hpp Header/DataStructures.cpp

@@ -28,11 +28,9 @@ Receiver::Receiver(){
 SignalPair& Receiver::readAnalogStick(){
 
 	// Debugging
-	std::cout << "Left Motor Signal: " << rcSignals[2].measurement << std::endl;
-	std::cout << "Right Motor Signal: " << rcSignals[1].measurement << std::endl;
 
-	signal(changeBounds(1000, 2000, 1023, rcSignals[2].measurement), 
-		changeBounds(1000, 2000, 1023, rcSignals[1].measurement));
+	signal(1023 - changeBounds(1000, 2000, 1023, rcSignals[2].measurement), 
+		1023 - changeBounds(1000, 2000, 1023, rcSignals[1].measurement));
 
 	return signal;
 
@@ -53,15 +51,13 @@ bool Receiver::changedSwitches() {
 
 bool Receiver::readLeftSwitch(){
 
-	std::cout << "Left switch raw data: " << rcSignals[0].measurement << std::endl;
-	return rcSignals[0].measurement > SWITCH_THRESH;
+	return rcSignals[0].measurement < SWITCH_THRESH;
 
 }
 
 bool Receiver::readRightSwitch(){
 
-	std::cout << "Right switch raw data: " << rcSignals[3].measurement << std::endl;
-	return rcSignals[3].measurement > SWITCH_THRESH;
+	return rcSignals[3].measurement < SWITCH_THRESH;
 
 }
 
