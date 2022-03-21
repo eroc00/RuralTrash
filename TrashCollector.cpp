@@ -1,10 +1,18 @@
 #include "TrashCollector.hpp"
 #include <iostream>
 
+#define UPDATETIME 300
+
 TrashCollector::TrashCollector(double distance_threshold) {
 	reset();
 	lidar.setDistanceThreshold(distance_threshold);
 	running = true;
+	gpioSetMode(LIGHTPIN, PI_OUTPUT);
+	gpioWrite(LIGHTPIN, 1);
+
+	rc.getSwitchState();
+	mode.disable();
+
 
 }
 
@@ -23,6 +31,13 @@ void TrashCollector::reset() {
 }
 
 void TrashCollector::run() {
+
+	// Setup
+	while (!rc.changedSwitches()) { 
+		// Stall for half a second until the operator is ready to move robot
+		gpioDelay(500000);
+	}
+
 
 	while (running) {
 		switch (mode.currMode()) {
@@ -45,6 +60,18 @@ void TrashCollector::run() {
 		case transition_state:
 			reset();
 			mode.setMode(nextState);
+
+			if (nextState == 3)
+				gpioSetTimerFuncEx(0, UPDATETIME, _callbackExt, (void*)this);
+			else
+				gpioSetTimerFuncEx(0, UPDATETIME, NULL, (void*)this);
+
+			// Flashing Light
+			if (mode.currMode() & (1 << 1))
+				gpioWrite(LIGHTPIN, 0);
+			else
+				gpioWrite(LIGHTPIN, 1)
+
 			std::cout << "Now in mode "<< (int)nextState << std::endl;
 			break;
 
@@ -96,7 +123,6 @@ void TrashCollector::manualMode() {
 }
 
 /***********
-	TODO: Implement straight-line autonomy
 
 	Goal: Move Trash Collector forward indefinitely until it senses an
 			obstacle in front of it.
@@ -106,13 +132,6 @@ void TrashCollector::manualMode() {
 
 */
 void TrashCollector::testAutoMode() {
-
-   // if(lidar.safeDistance() == 0)
-    //{
-     //   motors.stop();
-//		mode.setMode(1);
-  //      return;
-   // }
 
     motors(signals(767, 512));
     gpioDelay(100000);
@@ -129,19 +148,29 @@ void TrashCollector::testAutoMode() {
 
 */
 void TrashCollector::automatedMode() {
-
+	// Could use this function to log control system's outputs
 
 
 
 }
 
+void TrashCollector::_callbackExt(void* user) {
+	TrashCollector* self = (HeadwayTracker*)user;
 
+	user->_followLine();
 
+}
 
+void TrashCollector::_followLine() 
 
+	// Get inputs to control system
+	camera.getRoadCharacteristics(distance, angle);
 
+	// Run control system and output value to motor
+	motors(pdCon(distance, angle));
+		
 
-
+}
 
 
 

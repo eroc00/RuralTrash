@@ -5,7 +5,6 @@
 #include "Header/ImageProcessor.hpp"
 #include "Header/LateralController.hpp"
 
-
 class TrashCollector {
 public:
 	// Default constructor.
@@ -39,7 +38,10 @@ private:
 	ImageProcessor camera;
 	LateralController pdCon;
 	bool running;
+	unsigned int distance;
+	double angle;
 
+	// Helper functions
 	void standByMode();
 
 	void manualMode();
@@ -47,6 +49,10 @@ private:
 	void testAutoMode();
 
 	void automatedMode();
+
+	void _callbackExt(void *user);
+
+	void _followLine();
 
 	// TODO: Create a file object to log messages into.
 
