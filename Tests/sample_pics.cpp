@@ -16,7 +16,9 @@ int main(){
 	bool done = false;
 	std::string line;
 	auto t1 = system_clock::now(), t2 = system_clock::now();
-	double dist, angle;
+	
+	unsigned int dist;
+	double angle;
 
 	while (!done){
 		std::cout << "Save next image to which file: ";

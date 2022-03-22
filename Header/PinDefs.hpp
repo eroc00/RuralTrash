@@ -13,5 +13,5 @@
 #define CH6 27
 
 // Flashing Light
-#define LIGHTPIN 
+#define LIGHTPIN 26
 

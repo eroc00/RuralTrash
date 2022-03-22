@@ -8,11 +8,12 @@ TrashCollector::TrashCollector(double distance_threshold) {
 	lidar.setDistanceThreshold(distance_threshold);
 	running = true;
 	gpioSetMode(LIGHTPIN, PI_OUTPUT);
-	gpioWrite(LIGHTPIN, 1);
-
 	rc.getSwitchState();
 	mode.disable();
 
+	gpioWrite(LIGHTPIN, 0);
+	gpioDelay(1000000);
+	gpioWrite(LIGHTPIN, 1);
 
 }
 
@@ -33,7 +34,7 @@ void TrashCollector::reset() {
 void TrashCollector::run() {
 
 	// Setup
-	while (!rc.changedSwitches()) { 
+	while (!rc.getSwitchState()) { 
 		// Stall for half a second until the operator is ready to move robot
 		gpioDelay(500000);
 	}
@@ -67,10 +68,10 @@ void TrashCollector::run() {
 				gpioSetTimerFuncEx(0, UPDATETIME, NULL, (void*)this);
 
 			// Flashing Light
-			if (mode.currMode() & (1 << 1))
+			if (mode.currMode() == 1)
 				gpioWrite(LIGHTPIN, 0);
 			else
-				gpioWrite(LIGHTPIN, 1)
+				gpioWrite(LIGHTPIN, 1);
 
 			std::cout << "Now in mode "<< (int)nextState << std::endl;
 			break;
@@ -99,7 +100,7 @@ void TrashCollector::checkState() {
 		&& !lidar.safeDistance()) {
 		// Forcefully transition to standby state if an obstacle
 		// is in front of the Trash Collector
-		//mode.disable();
+
 		mode.setMode(transition_state);
 		nextState = (Mode)1;
 		reset();
@@ -155,19 +156,19 @@ void TrashCollector::automatedMode() {
 }
 
 void TrashCollector::_callbackExt(void* user) {
-	TrashCollector* self = (HeadwayTracker*)user;
+	TrashCollector* self = (TrashCollector*)user;
 
-	user->_followLine();
+	self->_followLine();
 
 }
 
-void TrashCollector::_followLine() 
+void TrashCollector::_followLine() {
 
 	// Get inputs to control system
 	camera.getRoadCharacteristics(distance, angle);
 
 	// Run control system and output value to motor
-	motors(pdCon(distance, angle));
+	motors(signals(600, (512*2/CV_PI)*angle));
 		
 
 }

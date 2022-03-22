@@ -69,7 +69,7 @@ void ImageProcessor::saveImage(std::string imageName){
 
 /*  Capture an image and apply Hough Transform to obtain
 	distance from and orientation of the road */
-void ImageProcessor::getRoadCharacteristics(double& dist, double& angle) {
+void ImageProcessor::getRoadCharacteristics(unsigned int& dist, double& angle) {
 
 	// Capture Image
 	capture();
@@ -95,7 +95,7 @@ void ImageProcessor::getRoadCharacteristics(double& dist, double& angle) {
 
 }
 
-void ImageProcessor::averageLines(double& dist, double& angle) {
+void ImageProcessor::averageLines(unsigned int& dist, double& angle) {
 
 	for (lineIncr = 0, dist = 0, angle = 0; 
 		lineIncr < lines.size() && lineIncr < 10; 
@@ -106,7 +106,7 @@ void ImageProcessor::averageLines(double& dist, double& angle) {
 
 	}
 
-	if (lineIncr | 0) lineIncr = 1;
+	if (!lineIncr) lineIncr = 1;
 	dist /= lineIncr;
 	angle /= lineIncr;
 
@@ -116,6 +116,6 @@ void ImageProcessor::averageLines(double& dist, double& angle) {
 }
 
 unsigned int ImageProcessor::getDistance(unsigned int xVal, unsigned int linDist, double theta) {
-	return -(sin(theta) / cos(theta))*xVal + (linDist / cos(theta)); // line spans from top to botton
-	//return -(cos(theta) / sin(theta))*xVal + (linDist / sin(theta)); // line spans from left to right
+	//return -(sin(theta) / cos(theta))*xVal + (linDist / cos(theta)); // line spans from top to botton
+	return -(cos(theta) / sin(theta))*xVal + (linDist / sin(theta)); // line spans from left to right
 }

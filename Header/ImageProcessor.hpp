@@ -26,7 +26,7 @@ public:
 
 /*  Capture an image and apply Hough Transform to obtain
 	distance from and orientation of the road */
-	void getRoadCharacteristics(double& dist, double& angle);
+	void getRoadCharacteristics(unsigned int& dist, double& angle);
 
 private:
 	// TODO: add data structue that is compatible with storing an image
@@ -36,7 +36,7 @@ private:
 	Image _dilate_element;
 	Image _erode_element;
 
-	void averageLines(double& dist, double& angle);
+	void averageLines(unsigned int& dist, double& angle);
 	unsigned int getDistance(unsigned int xVal, unsigned int linDist, double theta);
 
 	cv::Scalar nsrlb;

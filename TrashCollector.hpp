@@ -50,7 +50,7 @@ private:
 
 	void automatedMode();
 
-	void _callbackExt(void *user);
+	static void _callbackExt(void *user);
 
 	void _followLine();
 
