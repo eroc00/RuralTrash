@@ -34,7 +34,7 @@ int main(int argc, char** argv){
 	}
 
 	Cam Camera;
-	Camera.set(CV_CAP_PROP_FORMAT, CV_8UC1); // sets the video to grayscale
+	//Camera.set(CV_CAP_PROP_FORMAT, CV_8UC1); // sets the video to grayscale
 
 
 	std::cout << "Opening Camera... \n";

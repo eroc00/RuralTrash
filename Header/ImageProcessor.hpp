@@ -22,8 +22,12 @@ public:
 	void capture();
 
 /*	Read Image from local files*/
-	void readImage(char* imageName);
+	void readImage(std::string imageName);
 	void saveImage(std::string imageName);
+	
+	void undistort();
+	
+	cv::Mat undistort(cv::Mat& img);
 
 /*  Capture an image and apply Hough Transform to obtain
 	distance from and orientation of the road */
@@ -33,10 +37,13 @@ private:
 	// TODO: add data structue that is compatible with storing an image
 	Image _im;
 	Image _undistort;
+	Image _distort;
 	Image _mask;
 	Image _maskSunny;
 	Image _dilate_element;
 	Image _erode_element;
+	
+	cv::Rect subselection;
 
 	Matrix camMtx;
 	Matrix distCoeff;

@@ -6,6 +6,11 @@
 
 #define ANGLE_CUTOFF 40*(CV_PI/180)
 
+unsigned int getDistance(unsigned int xVal, unsigned int linDist, double theta){
+	return -(sin(theta)/cos(theta))*xVal + (linDist/cos(theta)); // vertical-ish line	
+	//return -(cos(theta)/sin(theta))*xVal + (linDist/sin(theta)); // horizontal-ish line	
+} 
+
 int main(int argc, char** argv){
 
 	if (argc != 5){
@@ -64,18 +69,21 @@ int main(int argc, char** argv){
 
 	// Hough Transform
 	std::vector<cv::Vec2f> lines;
-	cv::HoughLines(edgeImg, lines, 25, 0.4*CV_PI/(180), 300, 0, 0, 0);
+	cv::HoughLines(edgeImg, lines, 25, 0.4*CV_PI/(180), 300);
 
 	std::cout << "Lines found: " << lines.size() << std::endl;
 	cv::Point avgpt1, avgpt2;
-	size_t i = 0;
-	for (; 
+	size_t i = 0, avgRho = 0;
+	double avgTheta = 0;
+	for (i = 0, avgRho = 0; 
 			i < lines.size() && i < 10;
 			i++){
 		float rho = lines[i][0], theta = lines[i][1];
 		cv::Point pt1, pt2;
 		double a = cos(theta), b = sin(theta);
 		double x0 = a*rho, y0 = b*rho;
+		avgRho += rho;
+		avgTheta += theta;
 		pt1.x = cvRound(x0 + 1000*(-b));
 		pt1.y = cvRound(y0 + 1000*a);
 		pt2.x = cvRound(x0 - 1000*(-b));
@@ -99,8 +107,12 @@ int main(int argc, char** argv){
 	avgpt1.y /= (double)i;
 	avgpt2.x /= (double)i;
 	avgpt2.y /= (double)i;
+	avgRho /= i;
+	avgTheta /= (double)i;
 	line( image, avgpt1, avgpt2, cv::Scalar(255, 0, 0), 5, cv::LINE_AA);
-
+	line( image, cv::Point(0, 0), cv::Point(1275, 960), cv::Scalar(255, 0, 0), 5, cv::LINE_AA);
+	cv::circle( image, cv::Point(getDistance(avgRho*cos(avgTheta), avgRho, avgTheta), avgRho*cos(avgTheta)),
+				20, cv::Scalar(0, 0, 255), 5, cv::LINE_AA);
 
 /*
 	if (argc != 5){

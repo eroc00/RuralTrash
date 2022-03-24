@@ -5,11 +5,11 @@
 #include <chrono>
 
 #include "catch.hpp"
-#include "Header/DataStructures.hpp"
-#include "Header/OpController.hpp"
-#include "Header/Movement.hpp"
-#include "Header/Receiver.hpp"
-#include "Header/LateralController.hpp"
+#include "../Header/DataStructures.hpp"
+#include "../Header/OpController.hpp"
+#include "../Header/Movement.hpp"
+#include "../Header/Receiver.hpp"
+#include "../Header/LateralController.hpp"
 
 
 std::chrono::system_clock::duration timeFunction(void* func);

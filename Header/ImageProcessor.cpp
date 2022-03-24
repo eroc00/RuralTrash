@@ -1,5 +1,4 @@
 #include "ImageProcessor.hpp"
-#include <iostream>
 
 #define IMG_HEIGHT 960
 #define IMG_WIDTH 1280
@@ -9,27 +8,27 @@
 #define MAX_CANNY_THR 250
 
 // Image calibration parameters
-#define Fx 380
-#define Fy 380
-#define Cx 620
-#define Cy 487
+#define Fx 380.0
+#define Fy 380.0
+#define Cx 620.0
+#define Cy 487.0
 
 // Hough Transform parameters
 #define LINSEP 25
 #define ANGLESEP 0.4*(CV_PI/180)
 #define VOTE_THR 600
 
+#define CROPX 900
+
 #define COLUMNTOCHECK IMG_WIDTH/2.0
 
 ImageProcessor::ImageProcessor() {
 
-	_im.create(IMG_HEIGHT, IMG_WIDTH, CV_8UC3);
+	//_im.create(IMG_HEIGHT, IMG_WIDTH, CV_64FC1);
 	_undistort.create(IMG_HEIGHT, IMG_WIDTH, CV_8UC3);
-	std::cout << "a \n";
+	_distort.create(IMG_HEIGHT, IMG_WIDTH, CV_8UC3);
 	_mask.create(IMG_HEIGHT, IMG_WIDTH, CV_8UC1);
 	_maskSunny.create(IMG_HEIGHT, IMG_WIDTH, CV_8UC1);
-	camMtx.create(3, 3, CV_8UC1);
-	distCoeff.create(1, 4, CV_64FC1);
 
 	_dilate_element = cv::getStructuringElement(cv::MORPH_ELLIPSE,
 		cv::Size(2 * DIL_SIZE + 1, 2 * DIL_SIZE + 1),
@@ -43,19 +42,23 @@ ImageProcessor::ImageProcessor() {
 	nsrhb = cv::Scalar(60, 135, 122);
 	srlb = cv::Scalar(80, 0, 0);
 	srhb = cv::Scalar(255, 41, 155);
-	std::cout << "b \n";
 
-	camMtx.at<int>(0, 0) = Fx;
-	camMtx.at<int>(0, 2) = Cx;
-	camMtx.at<int>(1, 1) = Fy;
-	camMtx.at<int>(1, 2) = Cy;
-	std::cout << "c \n";
+	camMtx = cv::Mat::zeros(3, 3, CV_64FC1);
+	camMtx.at<double>(0, 0) = Fx;
+	camMtx.at<double>(0, 2) = Cx;
+	camMtx.at<double>(1, 1) = Fy;
+	camMtx.at<double>(1, 2) = Cy;
+	camMtx.at<double>(2, 2) = 1.0;
 
+
+	distCoeff = cv::Mat::zeros(4, 1, CV_64FC1);
 	distCoeff.at<double>(0) = -0.2;
 	distCoeff.at<double>(1) = 0.026;
-	std::cout << "d \n";
+
 	blurWindow = cv::Size(BLUR_SIZE, BLUR_SIZE);
 	lineIncr = 0;
+	
+	subselection = cv::Rect(CROPX, 0, IMG_WIDTH-CROPX, 700);
 
 }
 
@@ -71,24 +74,31 @@ bool ImageProcessor::open() {
 
 /*  Use camera sensor to capture and save a 960x1280 image */ 
 void ImageProcessor::capture() {
-	std::cout << "start \n";
 	b0055.grab();
-	std::cout << "Hello";
-	b0055.retrieve(_undistort);
-	std::cout << "Hi";
-	cv::undistort(_undistort, _im, camMtx, distCoeff);
-	std::cout << _im.rows << " " << _im.cols;
+	b0055.retrieve(_distort);
+	
 }
 
-void ImageProcessor::readImage(char* imageName){
-	_im = cv::imread(imageName);
-	cv::cvtColor(_im, _im, cv::COLOR_RGB2HSV);
+void ImageProcessor::undistort(){
+	cv::undistort(_distort, _undistort, camMtx, distCoeff);
+	
+}
+
+cv::Mat ImageProcessor::undistort(cv::Mat& img){
+	cv::undistort(img, _undistort, camMtx, distCoeff);
+	return _undistort;
+}
+
+void ImageProcessor::readImage(std::string imageName){
+	_undistort = cv::imread(imageName);
+	
+	//cv::cvtColor(_im, _im, cv::COLOR_RGB2HSV);
 }
 
 void ImageProcessor::saveImage(std::string imageName){
 	capture();
 	imageName = "/home/pi/RuralTrash/TestImages/" + imageName;
-	cv::imwrite(imageName, _im);
+	cv::imwrite(imageName, _undistort);
 }
 
 /*  Capture an image and apply Hough Transform to obtain
@@ -97,9 +107,10 @@ void ImageProcessor::getRoadCharacteristics(unsigned int& dist, double& angle) {
 
 	// Capture Image
 	capture();
+	undistort();
 
 	// Convert to HSV
-	
+	_im = _undistort(subselection);
 	cv::cvtColor(_im, _im, cv::COLOR_BGR2HSV);
 
 	/* Separate road from terrain */

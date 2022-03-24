@@ -52,10 +52,16 @@ add_executable(sample_pics
 		Tests/sample_pics.cpp)
 target_link_libraries(sample_pics ${OpenCV_LIBS} ${raspicam_CV_LIBS})
 
-add_executable(HeadwayTrackerTest 
-		Header/HeadwayTracker.hpp Header/HeadwayTracker.cpp
-		Tests/HeadwayTrackerTest.cpp)
-target_link_libraries(HeadwayTrackerTest pigpio)
+#add_executable(undistortion
+#		Header/ImageProcessor.hpp Header/ImageProcessor.cpp
+#		Tests/undistort.cpp)
+#target_link_libraries(undistortion ${OpenCV_LIBS} ${raspicam_CV_LIBS})
+
+
+#add_executable(HeadwayTrackerTest 
+#		Header/HeadwayTracker.hpp Header/HeadwayTracker.cpp
+#		Tests/HeadwayTrackerTest.cpp)
+#target_link_libraries(HeadwayTrackerTest pigpio)
 
 #add_executable(MotorTest
 #		Header/DataStructures.hpp Header/DataStructures.cpp
