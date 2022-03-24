@@ -8,6 +8,7 @@
 
 typedef raspicam::RaspiCam_Cv Camera;
 typedef cv::Mat Image;
+typedef cv::Mat Matrix;
 
 class ImageProcessor {
 public:
@@ -31,13 +32,19 @@ public:
 private:
 	// TODO: add data structue that is compatible with storing an image
 	Image _im;
+	Image _undistort;
 	Image _mask;
 	Image _maskSunny;
 	Image _dilate_element;
 	Image _erode_element;
 
+	Matrix camMtx;
+	Matrix distCoeff;
+
 	void averageLines(unsigned int& dist, double& angle);
 	unsigned int getDistance(unsigned int xVal, unsigned int linDist, double theta);
+
+
 
 	cv::Scalar nsrlb;
 	cv::Scalar nsrhb;
