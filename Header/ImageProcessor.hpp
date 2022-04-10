@@ -31,7 +31,7 @@ public:
 
 /*  Capture an image and apply Hough Transform to obtain
 	distance from and orientation of the road */
-	void getRoadCharacteristics(unsigned int& dist, double& angle);
+	void getRoadCharacteristics(int& dist, double& angle);
 
 private:
 	// TODO: add data structue that is compatible with storing an image
@@ -48,8 +48,8 @@ private:
 	Matrix camMtx;
 	Matrix distCoeff;
 
-	void averageLines(unsigned int& dist, double& angle);
-	unsigned int getDistance(unsigned int xVal, unsigned int linDist, double theta);
+	void averageLines(int& dist, double& angle);
+	int getDistance(unsigned int xVal, int linDist, double theta);
 
 
 

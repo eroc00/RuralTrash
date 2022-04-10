@@ -17,7 +17,7 @@ int main(){
 	std::string line;
 	auto t1 = system_clock::now(), t2 = system_clock::now();
 	
-	unsigned int dist;
+	int dist;
 	double angle;
 
 	while (!done){

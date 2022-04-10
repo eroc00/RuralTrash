@@ -34,6 +34,7 @@ public:
 
 private:
 	double measurement;
+	double prevMeas;
 	double _mindist;
 	uint32_t pulseWidth;
 	bool measuring;

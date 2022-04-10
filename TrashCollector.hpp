@@ -26,6 +26,8 @@ public:
 
 	void checkState();
 
+	double stanleyLC(const int& distanceErr, const double& headwayTilt);
+
 
 private:
 	OpController mode;
@@ -38,7 +40,7 @@ private:
 	ImageProcessor camera;
 	LateralController pdCon;
 	bool running;
-	unsigned int distance;
+	int distance;
 	double angle;
 
 	// Helper functions

@@ -10,6 +10,8 @@ TrashCollector::TrashCollector(double distance_threshold) {
 	gpioSetMode(LIGHTPIN, PI_OUTPUT);
 	rc.getSwitchState();
 	mode.disable();
+	camera.open();
+	camera.getRoadCharacteristics(distance, angle);
 
 	gpioWrite(LIGHTPIN, 0);
 	gpioDelay(1000000);
@@ -59,8 +61,9 @@ void TrashCollector::run() {
 			break;
 
 		case transition_state:
-			reset();
+
 			mode.setMode(nextState);
+			reset();
 
 			if (nextState == 3)
 				gpioSetTimerFuncEx(0, UPDATETIME, _callbackExt, (void*)this);
@@ -150,7 +153,7 @@ void TrashCollector::testAutoMode() {
 */
 void TrashCollector::automatedMode() {
 	// Could use this function to log control system's outputs
-
+	gpioDelay(100000);
 
 
 }
@@ -168,12 +171,16 @@ void TrashCollector::_followLine() {
 	camera.getRoadCharacteristics(distance, angle);
 
 	// Run control system and output value to motor
-	motors(signals(600, (512*2/CV_PI)*angle));
-		
+	motors(signals(700, (512*2/CV_PI)*stanleyLC(distance, angle) ));
+
 
 }
 
+double TrashCollector::stanleyLC(const int& distanceErr, const double& headwayTilt) {
+	return (headwayTilt + atan(distanceErr*0.0023) + CV_PI/2)/2;
 
+
+}
 
 
 
