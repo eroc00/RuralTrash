@@ -5,12 +5,11 @@
 #define BLUR_SIZE 13
 #define DIL_SIZE 3
 #define ERO_SIZE 5
-#define MAX_CANNY_THR 250
-#define SUNNY_LOWERBOUND cv::Scalar(0, 0, 0)
-#define SUNNY_HIGHERBOUND cv::Scalar(60, 135, 122)
-#define SHADOW_LOWERBOUND cv::Scalar(80, 0, 0)
-#define SHADOW_HIGHERBOUND cv::Scalar(179, 41, 155)
-
+#define MAX_CANNY_THR 200
+#define SUNNY_LOWERBOUND cv::Scalar(0, 92, 0)
+#define SUNNY_HIGHERBOUND cv::Scalar(56, 255, 255)
+#define SHADOW_LOWERBOUND cv::Scalar(0, 92, 0)
+#define SHADOW_HIGHERBOUND cv::Scalar(56, 255, 255)
 
 // Image calibration parameters
 #define Fx 380.0
@@ -21,7 +20,7 @@
 // Hough Transform parameters
 #define LINSEP 25
 #define ANGLESEP 0.4*(CV_PI/180)
-#define VOTE_THR 525
+#define VOTE_THR 600
 
 #define CROPX IMG_WIDTH/2
 
@@ -64,7 +63,7 @@ ImageProcessor::ImageProcessor() {
 
 	blurWindow = cv::Size(BLUR_SIZE, BLUR_SIZE);
 	lineIncr = 0;
-	
+
 	subselection = cv::Rect(CROPX, 0, IMG_WIDTH-CROPX, 700);
 
 }
@@ -120,11 +119,16 @@ void ImageProcessor::getRoadCharacteristics(int& dist, double& angle) {
 	_im = _undistort(subselection);
 	cv::cvtColor(_im, _im, cv::COLOR_BGR2HSV);
 
+	// Histogram Equalization
+	split(_im, img);
+	equalizeHist(img[1], img[1]);
+	merge(img, 3, _im);
+
 	/* Separate road from terrain */
 	cv::inRange(_im, nsrlb, nsrhb, _mask);
-	cv::inRange(_im, srlb, srhb, _maskSunny);
+	//cv::inRange(_im, srlb, srhb, _maskSunny);
 
-	_mask |= _maskSunny;
+	//_mask |= _maskSunny;
 
 	cv::dilate(_mask, _mask, _dilate_element);
 	cv::erode(_mask, _mask, _erode_element);

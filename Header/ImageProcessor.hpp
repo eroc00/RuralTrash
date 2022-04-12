@@ -43,6 +43,8 @@ private:
 	Image _dilate_element;
 	Image _erode_element;
 	
+	Image img[3];
+
 	cv::Rect subselection;
 
 	Matrix camMtx;

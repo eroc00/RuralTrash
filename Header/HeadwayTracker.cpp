@@ -35,7 +35,7 @@ double HeadwayTracker::readDistance(){
 
 	prevMeas = (CUTOFF_FREQ*UPDATETIME*measurement + prevMeas)/(1.0 + CUTOFF_FREQ*UPDATETIME);
 
-	return measurement;
+	return prevMeas;
 }
 
 void HeadwayTracker::_callbackExt(int gpio, int level, uint32_t tick, void *user){

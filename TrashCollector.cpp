@@ -71,7 +71,7 @@ void TrashCollector::run() {
 				gpioSetTimerFuncEx(0, UPDATETIME, NULL, (void*)this);
 
 			// Flashing Light
-			if (mode.currMode() == 1)
+			if (mode.currMode() & 2)
 				gpioWrite(LIGHTPIN, 0);
 			else
 				gpioWrite(LIGHTPIN, 1);
@@ -137,7 +137,7 @@ void TrashCollector::manualMode() {
 */
 void TrashCollector::testAutoMode() {
 
-    motors(signals(767, 512));
+    motors(signals(512, 512));
     gpioDelay(100000);
 
 
