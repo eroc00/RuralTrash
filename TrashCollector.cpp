@@ -3,15 +3,21 @@
 
 #define UPDATETIME 300
 
+#define FREQ 1
+
 TrashCollector::TrashCollector(double distance_threshold) {
 	reset();
 	lidar.setDistanceThreshold(distance_threshold);
 	running = true;
+	autonomyActive = false;
+	gpioSetTimerFuncEx(0, UPDATETIME, _callbackExt, (void*)this);
 	gpioSetMode(LIGHTPIN, PI_OUTPUT);
 	rc.getSwitchState();
 	mode.disable();
 	camera.open();
 	camera.getRoadCharacteristics(distance, angle);
+	prevAngle = CV_PI/2;
+	newAngle = 0;
 
 	gpioWrite(LIGHTPIN, 0);
 	gpioDelay(1000000);
@@ -66,17 +72,17 @@ void TrashCollector::run() {
 			reset();
 
 			if (nextState == 3)
-				gpioSetTimerFuncEx(0, UPDATETIME, _callbackExt, (void*)this);
+				autonomyActive = true;
 			else
-				gpioSetTimerFuncEx(0, UPDATETIME, NULL, (void*)this);
+				autonomyActive = false;
 
 			// Flashing Light
-			if (mode.currMode() & 2)
+			if (((int)mode.currMode() & 2) == 2)
 				gpioWrite(LIGHTPIN, 0);
 			else
 				gpioWrite(LIGHTPIN, 1);
 
-			std::cout << "Now in mode "<< (int)nextState << std::endl;
+			std::cout << "Now in mode "<< (int)mode.currMode() << std::endl;
 			break;
 
 		default:
@@ -137,7 +143,7 @@ void TrashCollector::manualMode() {
 */
 void TrashCollector::testAutoMode() {
 
-    motors(signals(512, 512));
+    motors(signals(750, 512));
     gpioDelay(100000);
 
 
@@ -159,20 +165,26 @@ void TrashCollector::automatedMode() {
 }
 
 void TrashCollector::_callbackExt(void* user) {
-	TrashCollector* self = (TrashCollector*)user;
+	
+		TrashCollector* self = (TrashCollector*)user;
 
-	self->_followLine();
+		self->_followLine();
 
+	
 }
 
 void TrashCollector::_followLine() {
-
+	if (autonomyActive){
 	// Get inputs to control system
 	camera.getRoadCharacteristics(distance, angle);
 
-	// Run control system and output value to motor
-	motors(signals(700, (512*2/CV_PI)*stanleyLC(distance, angle) ));
+	newAngle = (FREQ*UPDATETIME*stanleyLC(distance, angle) + prevAngle)/(1.0 + FREQ*UPDATETIME);
+	prevAngle = newAngle;
 
+	// Run control system and output value to motor
+		motors(signals(695, (512*2/CV_PI)*newAngle ));
+		std::cout << "Distance: " << distance << " | Angle: " << angle << std::endl;
+	}
 
 }
 

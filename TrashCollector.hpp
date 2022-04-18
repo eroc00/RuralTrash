@@ -40,8 +40,11 @@ private:
 	ImageProcessor camera;
 	LateralController pdCon;
 	bool running;
+	bool autonomyActive;
 	int distance;
 	double angle;
+	double prevAngle;
+	double newAngle;
 
 	// Helper functions
 	void standByMode();

@@ -6,9 +6,9 @@
 #define DIL_SIZE 3
 #define ERO_SIZE 5
 #define MAX_CANNY_THR 200
-#define SUNNY_LOWERBOUND cv::Scalar(0, 92, 0)
-#define SUNNY_HIGHERBOUND cv::Scalar(56, 255, 255)
-#define SHADOW_LOWERBOUND cv::Scalar(0, 92, 0)
+//#define SUNNY_LOWERBOUND cv::Scalar(0, 92, 0)
+//#define SUNNY_HIGHERBOUND cv::Scalar(56, 255, 255)
+#define SHADOW_LOWERBOUND cv::Scalar(0, 125, 0)
 #define SHADOW_HIGHERBOUND cv::Scalar(56, 255, 255)
 
 // Image calibration parameters
@@ -36,18 +36,18 @@ ImageProcessor::ImageProcessor() {
 	_mask.create(IMG_HEIGHT, IMG_WIDTH, CV_8UC1);
 	_maskSunny.create(IMG_HEIGHT, IMG_WIDTH, CV_8UC1);
 
-	_dilate_element = cv::getStructuringElement(cv::MORPH_ELLIPSE,
+	_dilate_element = cv::getStructuringElement(cv::MORPH_RECT,
 		cv::Size(2 * DIL_SIZE + 1, 2 * DIL_SIZE + 1),
 		cv::Point(DIL_SIZE, DIL_SIZE));
 
-	_erode_element = cv::getStructuringElement(cv::MORPH_CROSS,
+	_erode_element = cv::getStructuringElement(cv::MORPH_RECT,
 		cv::Size(2 * ERO_SIZE + 1, 2 * ERO_SIZE + 1),
 		cv::Point(ERO_SIZE, ERO_SIZE));
 
 	nsrlb = SHADOW_LOWERBOUND;
 	nsrhb = SHADOW_HIGHERBOUND;
-	srlb = SUNNY_LOWERBOUND;
-	srhb = SUNNY_HIGHERBOUND;
+//	srlb = SUNNY_LOWERBOUND;
+//	srhb = SUNNY_HIGHERBOUND;
 
 	camMtx = cv::Mat::zeros(3, 3, CV_64FC1);
 	camMtx.at<double>(0, 0) = Fx;
@@ -103,7 +103,7 @@ void ImageProcessor::readImage(std::string imageName){
 
 void ImageProcessor::saveImage(std::string imageName){
 	capture();
-	imageName = "/home/pi/RuralTrash/TestImages/" + imageName;
+	imageName = "/home/ruraltrash/RuralTrash/TestImages/" + imageName;
 	cv::imwrite(imageName, _undistort);
 }
 
@@ -132,10 +132,14 @@ void ImageProcessor::getRoadCharacteristics(int& dist, double& angle) {
 
 	cv::dilate(_mask, _mask, _dilate_element);
 	cv::erode(_mask, _mask, _erode_element);
+	cv::imwrite("cannyImg.jpg", _mask);
+
 	cv::blur(_mask, _mask, blurWindow);
 	cv::Canny(_mask, _mask, 0, MAX_CANNY_THR, 3);
 
-	cv::HoughLines(_mask, lines, LINSEP, ANGLESEP, VOTE_THR, 0, 0, 0.0175, CV_PI-0.0175);
+	
+
+	cv::HoughLines(_mask, lines, LINSEP, ANGLESEP, VOTE_THR, 0, 0);
 
 	averageLines(dist, angle);
 
@@ -152,12 +156,14 @@ void ImageProcessor::averageLines(int& dist, double& angle) {
 
 	}
 
+
 	if (lineIncr == 0){
 		lineIncr = IDEALDIST + 1;
 		dist = 0;
 		angle = CV_PI/2;
 	}
 	dist /= lineIncr;
+	angle /= lineIncr;
 
 	dist = getDistance(COLUMNTOCHECK, dist, angle) - IDEALDIST;
 
