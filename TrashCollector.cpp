@@ -16,8 +16,6 @@ TrashCollector::TrashCollector(double distance_threshold) {
 	mode.disable();
 	camera.open();
 	camera.getRoadCharacteristics(distance, angle);
-	prevAngle = CV_PI/2;
-	newAngle = 0;
 
 	gpioWrite(LIGHTPIN, 0);
 	gpioDelay(1000000);
@@ -36,6 +34,8 @@ void TrashCollector::reset() {
 	//mode.disable();
 	motors.stop();
 	pdCon.reset();
+	prevAngle = CV_PI / 2;
+	newAngle = 0;
 
 }
 
@@ -175,10 +175,12 @@ void TrashCollector::_callbackExt(void* user) {
 
 void TrashCollector::_followLine() {
 	if (autonomyActive){
+
 	// Get inputs to control system
 	camera.getRoadCharacteristics(distance, angle);
 
-	newAngle = (FREQ*UPDATETIME*stanleyLC(distance, angle) + prevAngle)/(1.0 + FREQ*UPDATETIME);
+	// Filter turn angle
+	newAngle = (FREQ*UPDATETIME*0.001*stanleyLC(distance, angle) + prevAngle)/(1.0 + FREQ*UPDATETIME*0.001);
 	prevAngle = newAngle;
 
 	// Run control system and output value to motor
@@ -189,8 +191,7 @@ void TrashCollector::_followLine() {
 }
 
 double TrashCollector::stanleyLC(const int& distanceErr, const double& headwayTilt) {
-	return (headwayTilt + atan(distanceErr*0.0023) + CV_PI/2)/2;
-
+	return (headwayTilt + atan(distanceErr*0.0023) + CV_PI)/2;
 
 }
 

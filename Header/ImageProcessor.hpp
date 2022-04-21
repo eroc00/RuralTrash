@@ -10,6 +10,11 @@ typedef raspicam::RaspiCam_Cv Camera;
 typedef cv::Mat Image;
 typedef cv::Mat Matrix;
 
+struct Point {
+	int x = 0;
+	int y = 0;
+};
+
 class ImageProcessor {
 public:
 
@@ -46,13 +51,22 @@ private:
 	Image img[3];
 
 	cv::Rect subselection;
+	Point pt1;
+	Point pt2;
+	int x0;
+	int y0;
+	double m;
+	int a;
+	int b;
+	int denom;
 
 	Matrix camMtx;
 	Matrix distCoeff;
 
 	void averageLines(int& dist, double& angle);
-	int getDistance(unsigned int xVal, int linDist, double theta);
-
+	int getDistance();
+	double getAngle();
+	void resetPoints();
 
 
 	cv::Scalar nsrlb;

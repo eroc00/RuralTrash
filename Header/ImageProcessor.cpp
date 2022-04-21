@@ -66,6 +66,13 @@ ImageProcessor::ImageProcessor() {
 
 	subselection = cv::Rect(CROPX, 0, IMG_WIDTH-CROPX, 700);
 
+	x0 = 0;
+	y0 = 0;
+	m = 0;
+	a = 0;
+	b = 0;
+	denom = 0;
+
 }
 
 ImageProcessor::~ImageProcessor() {
@@ -132,14 +139,12 @@ void ImageProcessor::getRoadCharacteristics(int& dist, double& angle) {
 
 	cv::dilate(_mask, _mask, _dilate_element);
 	cv::erode(_mask, _mask, _erode_element);
-	cv::imwrite("cannyImg.jpg", _mask);
+	//cv::imwrite("cannyImg.jpg", _mask);
 
 	cv::blur(_mask, _mask, blurWindow);
 	cv::Canny(_mask, _mask, 0, MAX_CANNY_THR, 3);
-
 	
-
-	cv::HoughLines(_mask, lines, LINSEP, ANGLESEP, VOTE_THR, 0, 0);
+	cv::HoughLines(_mask, lines, LINSEP, ANGLESEP, VOTE_THR);
 
 	averageLines(dist, angle);
 
@@ -147,30 +152,71 @@ void ImageProcessor::getRoadCharacteristics(int& dist, double& angle) {
 
 void ImageProcessor::averageLines(int& dist, double& angle) {
 
+	resetPoints();
+
 	for (lineIncr = 0, dist = 0, angle = 0; 
 		lineIncr < lines.size() && lineIncr < 10; 
 		lineIncr++) {
 
-		dist += lines[lineIncr][0];
-		angle += lines[lineIncr][1];
+		dist = lines[lineIncr][0];
+		angle = lines[lineIncr][1];
+
+		a = cos(theta);
+		b = sin(theta);
+
+		x0 = a*dist;
+		y0 = b*dist;
+
+		// accumulate all point coordinates into respective variables
+
+		pt1.x += (x0 + 1000 * (-b));
+		pt1.y += (y0 + 1000 * a);
+		pt2.x += (x0 - 1000 * (-b));
+		pt2.y += (y0 - 1000 * a);
 
 	}
 
-
+	// If no line was found
 	if (lineIncr == 0){
-		lineIncr = IDEALDIST + 1;
-		dist = 0;
-		angle = CV_PI/2;
+		pt1.x = 200;
+		pt1.y = IDEALDIST;
+		pt2.x = 600;
+		pt2.y = IDEALDIST;
+		lineIncr = 1;
 	}
-	dist /= lineIncr;
-	angle /= lineIncr;
 
-	dist = getDistance(COLUMNTOCHECK, dist, angle) - IDEALDIST;
+	// Average points
+	pt1.x /= lineIncr;
+	pt1.y /= lineIncr;
+	pt2.x /= lineIncr;
+	pt2.y /= lineIncr;
+
+	dist = getDistance() - IDEALDIST; // distance error
+	angle = getAngle(); // angle of road w respect to headway
 
 }
 
-int ImageProcessor::getDistance(unsigned int xVal, int linDist, double theta) {
-	//return -(sin(theta) / cos(theta))*xVal + (linDist / cos(theta)); // line spans from top to botton
-	return -(cos(theta) / sin(theta))*xVal + (linDist / sin(theta)); // line spans from left to right
+int ImageProcessor::getDistance() {
+
+	denom = (pt2.x - pt1.x);
+	if (denom == 0)
+		denom = 0.00001;
+	
+	m = (pt2.y - pt1.y)/denom;
+	b = pt1.y - (m * pt1.x);
+
+	return (m * COLUMNTOCHECK) + b;
+
 }
 
+// Angle ranges from -pi/2 to pi/2
+double ImageProcessor::getAngle() {
+	return atan(m);
+}
+
+void ImageProcessor::resetPoints() {
+	pt1.x = 0;
+	pt1.y = 0;
+	pt2.x = 0;
+	pt2.y = 0;
+}
